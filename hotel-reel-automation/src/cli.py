@@ -34,13 +34,27 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _run_project(args) -> int:
-    result = orchestrator.run_pipeline(
-        args.project,
-        tone=args.tone,
-        length=args.length,
-        skip_render=args.skip_render,
-        image_to_video_enabled=args.image_to_video,
-    )
+    try:
+        result = orchestrator.run_pipeline(
+            args.project,
+            tone=args.tone,
+            length=args.length,
+            skip_render=args.skip_render,
+            image_to_video_enabled=args.image_to_video,
+        )
+    except orchestrator.PipelineError as exc:
+        # 원시 traceback 대신, 어떤 단계에서 왜 실패했는지 바로 알 수 있는 형태로 출력한다.
+        print(json.dumps({
+            "project": args.project,
+            "failed_step": exc.step,
+            "error": str(exc.original),
+        }, ensure_ascii=False, indent=2), file=sys.stderr)
+        return 1
+    except FileNotFoundError as exc:
+        print(json.dumps({"project": args.project, "error": str(exc)}, ensure_ascii=False, indent=2),
+              file=sys.stderr)
+        return 1
+
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if all(v == "ok" for v in result["steps"].values()) else 1
 

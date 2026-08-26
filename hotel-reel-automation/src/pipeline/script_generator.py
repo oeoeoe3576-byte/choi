@@ -43,6 +43,35 @@ CTA_TEMPLATES = {
     "book_now": "지금 바로 예약 링크를 확인해보세요.",
 }
 
+# highlight_points가 목표 컷 수보다 적을 때, 같은 문장을 그대로 반복하는 대신
+# 채워 넣는 톤별 필러 문장. (완전한 대체는 아니지만 "완전 동일 자막 반복"은 막아준다.)
+GENERIC_FILLERS = {
+    "emotional": [
+        "여기서만 느낄 수 있는 분위기가 있어요.",
+        "머무는 내내 마음이 편했어요.",
+        "사진으로 다 담기 아쉬운 곳이에요.",
+        "다시 오고 싶은 숙소였어요.",
+    ],
+    "informative": [
+        "체크인 절차도 어렵지 않았어요.",
+        "주변 편의시설 접근성도 좋은 편이에요.",
+        "가격 대비 만족도가 높은 편이에요.",
+        "재방문 시에도 고려할 만해요.",
+    ],
+    "review": [
+        "직접 지내보니 후회 없었어요.",
+        "다음에 또 오고 싶다는 생각이 들었어요.",
+        "주변 사람들에게도 추천하고 싶어요.",
+        "기대했던 것보다 만족스러웠어요.",
+    ],
+    "ad": [
+        "지금이 바로 예약하기 좋은 타이밍이에요.",
+        "이런 조건, 흔치 않아요.",
+        "망설이면 늦을 수 있어요.",
+        "한 번쯤 직접 경험해볼 가치가 있어요.",
+    ],
+}
+
 # 나열형 문구를 자연스러운 짧은 문장으로 바꾸기 위한 최소한의 규칙 기반 변환.
 # (완벽한 한국어 NLG는 아니며, 실제 LLM 연결 시 훨씬 자연스러운 문장이 생성됩니다.)
 _EXACT_SUFFIX_RULES = [
@@ -95,10 +124,19 @@ def _template_script(project: Project) -> dict:
     cta = CTA_TEMPLATES.get(project.cta_type, CTA_TEMPLATES["save"])
 
     points = project.highlight_points or [f"{project.hotel_name}의 매력적인 공간"]
+    naturalized_points = [_naturalize(p) for p in points]
+    # highlight_points가 컷 수보다 적으면, 같은 문장을 그대로 반복하지 않도록
+    # 톤별 필러 문장으로 채운다 (완전히 똑같은 자막이 여러 번 나오는 것을 방지).
+    fillers = GENERIC_FILLERS.get(project.tone, GENERIC_FILLERS["emotional"])
+    pool = naturalized_points + [f for f in fillers if f not in naturalized_points]
+
     scenes = []
     for i in range(scene_count):
-        point = points[i % len(points)]
-        scenes.append(_naturalize(point))
+        if i < len(pool):
+            scenes.append(pool[i])
+        else:
+            # 풀도 다 썼으면(아주 적은 정보로 아주 긴 영상을 요청한 극단적 경우) 그때만 순환한다.
+            scenes.append(pool[i % len(pool)])
 
     return {"hook": hook, "scenes": scenes, "closing": closing, "cta": cta}
 

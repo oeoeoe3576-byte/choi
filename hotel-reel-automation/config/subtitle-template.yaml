@@ -36,10 +36,12 @@ layouts:
     font_color: "#FFFFFF"
     stroke_color: "#000000"
     stroke_width_px: 4
-    box_enabled: false
+    # 실제 숙소 사진은 배경 밝기/색이 제각각이라 박스 없이는 가독성이 불안정할 수 있어
+    # 옅은 반투명 박스를 기본으로 켜둔다 (완전히 끄고 싶으면 false로).
+    box_enabled: true
     box_color: "#000000"
-    box_opacity: 0.0
-    box_radius_px: 0
+    box_opacity: 0.28
+    box_radius_px: 14
     line_spacing_px: 10
     fade_in_ms: 100
     fade_out_ms: 100

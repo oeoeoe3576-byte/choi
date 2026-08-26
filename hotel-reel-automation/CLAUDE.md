@@ -49,10 +49,14 @@ project_loader → image_classifier → script_generator → shot_planner
   표를 따른다. `input.md`가 없으면 사용자에게 필요한 필드를 물어보고 생성한다.
 - **사진 없이 구조만 테스트**: `python3 scripts/generate_mock_images.py --project <경로>`
   로 mock 이미지를 만든 뒤 `--skip-render`로 빠르게 데이터 단계만 검증한다.
-- **렌더링 결과가 이상할 때**: `logs/ffmpeg.log`를 먼저 확인한다. 자막이 화면
-  밖으로 나가거나 잘리면 `src/pipeline/renderer.py`의 `_drawtext_filter`
-  (폭 기준 자동 축소 로직)와 `config/subtitle-template.yaml`의
-  `max_chars_per_line`를 함께 살펴본다.
+- **렌더링 결과가 이상할 때**: `logs/ffmpeg.log`를 먼저 확인한다. 자막은
+  libass(`ass` 필터)로 번인되며, `src/pipeline/renderer.py`의
+  `write_ass_file`(폭 기준 폰트 자동 축소 로직)과
+  `config/subtitle-template.yaml`의 `max_chars_per_line`를 함께 살펴본다.
+  키워드 강조 색상은 `style-rules.yaml`의 `subtitle.tone`(clean/bold/friendly)
+  값을 `subtitle-template.yaml`의 `tone_emphasis_color`에서 찾아 적용한다 —
+  이 둘의 키가 어긋나면 강조색이 항상 기본값으로 고정되니 주의할 것
+  (실제로 한 번 이 버그가 있었다).
 - **컷 길이가 목표 영상 길이와 안 맞을 때**: `config/style-rules.yaml`의
   `average_shot_duration`/`min_shot_duration`/`max_shot_duration`이
   `src/pipeline/script_generator.py`의 `SCENE_COUNT_BY_LENGTH`와 정합적인지

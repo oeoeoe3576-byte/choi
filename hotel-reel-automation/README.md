@@ -189,7 +189,7 @@ python -m src.main --update-style-rules --reference-dir <레퍼런스 폴더>
 
 - CapCut 등 GUI 자동화 클릭 방식보다 환경 의존성이 적다 (헤드리스 서버/컨테이너에서 안정적).
 - 완전히 코드/설정 파일로 파라미터화할 수 있다 — config만 바꾸면 결과가 바뀐다.
-- 컷마다 `scale→crop→zoompan(모션)→fade(전환)→drawtext(자막)` 필터 체인을 만들고,
+- 컷마다 `scale→crop→zoompan(모션)→fade(전환)→ass(자막, libass)` 필터 체인을 만들고,
   concat demuxer로 이어붙인 뒤 mp4로 인코딩한다 (`src/pipeline/renderer.py`).
 
 ## 향후 확장 포인트 (구조는 이미 열어둠)

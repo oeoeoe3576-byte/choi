@@ -65,6 +65,13 @@ def load_project(project_dir: str | Path) -> Project:
 
 def apply_overrides(project: Project, tone: str | None = None, length: int | None = None) -> Project:
     if tone:
+        if tone != project.tone and project.style_preset:
+            # input.md에 style_preset이 고정돼 있으면 --tone으로 톤을 바꿔도
+            # 시각 스타일(모션/자막 위치/전환)은 그대로 clean_travel 등으로 남아
+            # 사용자가 "톤을 바꿨는데 왜 그대로지" 라고 오해하기 쉽다.
+            # CLI에서 명시적으로 --tone을 준 경우엔 톤에 맞는 스타일로도 같이
+            # 바뀌는 것이 직관적이므로, 이때는 input.md의 style_preset 고정을 해제한다.
+            project.style_preset = ""
         project.tone = tone
     if length:
         project.video_length = length

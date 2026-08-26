@@ -46,6 +46,18 @@ def run_pipeline(
 
     result: dict = {"project": project.project_name, "steps": {}}
 
+    if not project.images:
+        # 이미지가 0장이면 뒤 단계(특히 렌더링)를 다 돌고 나서야 ffmpeg concat이
+        # "No files to concat" 같은 알아보기 힘든 오류로 죽는다. 여기서 바로,
+        # 명확한 메시지로 실패시킨다.
+        msg = (
+            f"{project.images_dir} 에 이미지가 없습니다. 최소 1장 이상 필요합니다. "
+            "실제 사진이 없다면 'python3 scripts/generate_mock_images.py "
+            f"--project {project.project_dir}' 로 mock 이미지를 먼저 생성하세요."
+        )
+        logger.step_fail("project_loader", msg)
+        raise PipelineError("project_loader", RuntimeError(msg))
+
     def step(name, fn):
         logger.step_start(name)
         try:

@@ -129,7 +129,7 @@ styles:
     subtitle:
       position: "lower_third"
       max_lines: 2
-      max_chars_per_line: 14
+      max_chars_per_line: 16
       tone: "bold"
       keyword_emphasis: true
     motion_preferences:

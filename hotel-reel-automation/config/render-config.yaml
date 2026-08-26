@@ -31,7 +31,11 @@ thumbnail:
   overlay_text: true
 
 subtitle_burn_in:
-  enabled: true              # true면 ffmpeg drawtext로 영상에 직접 번인
+  enabled: true              # true면 ffmpeg의 ass(libass) 필터로 영상에 직접 번인
+  # 이 경로들은 "한글 폰트가 시스템에 있는지" 확인하는 용도로만 쓰인다
+  # (없으면 자막 번인을 건너뜀). 실제 렌더링에 쓰이는 폰트 이름은
+  # config/subtitle-template.yaml의 layouts.*.font_family 값(예: NanumGothic)이며,
+  # fontconfig가 해당 family를 시스템에서 찾아 렌더링한다.
   font_path_candidates:
     - "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf"
     - "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
