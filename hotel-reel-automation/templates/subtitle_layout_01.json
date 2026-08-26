@@ -1,0 +1,18 @@
+{
+  "_comment": "lower_third 자막 레이아웃 프리셋 (subtitle-template.yaml의 lower_third와 동기화됨)",
+  "layout_id": "subtitle_layout_01",
+  "position": "lower_third",
+  "margin_bottom_pct": 12,
+  "margin_side_pct": 8,
+  "max_lines": 2,
+  "max_chars_per_line": 16,
+  "font_family": "NanumGothic, Apple SD Gothic Neo, sans-serif",
+  "font_size_pct": 5.2,
+  "font_color": "#FFFFFF",
+  "stroke_color": "#000000",
+  "stroke_width_px": 3,
+  "box_enabled": true,
+  "box_color": "#000000",
+  "box_opacity": 0.35,
+  "box_radius_px": 14
+}

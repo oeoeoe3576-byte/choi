@@ -1,0 +1,17 @@
+{
+  "_comment": "썸네일 생성 템플릿. thumbnail_generator.py가 참고한다.",
+  "source": "first_shot",
+  "resolution": [1080, 1920],
+  "overlay_text": {
+    "enabled": true,
+    "text_source": "hotel_name_and_hook",
+    "position": "lower_third",
+    "font_size_pct": 6.5,
+    "font_color": "#FFFFFF",
+    "stroke_color": "#000000",
+    "stroke_width_px": 4,
+    "box_enabled": true,
+    "box_color": "#000000",
+    "box_opacity": 0.4
+  }
+}

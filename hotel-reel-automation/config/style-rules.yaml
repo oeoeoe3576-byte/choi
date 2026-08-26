@@ -1,0 +1,153 @@
+# style-rules.yaml
+# ------------------------------------------------------------------
+# 편집 스타일 규칙 - 컷 길이 / 전환 / 자막 / 모션 성향을 스타일 프리셋 단위로 정의한다.
+# 레퍼런스 영상을 분석한 결과는 여기에 "누적"된다 (기존 스타일을 덮어쓰지 않고 병합).
+# `python -m src.main --update-style-rules --reference-dir <path>` 실행 시
+# src/pipeline/reference_updater 로직이 이 파일의 styles.* 항목을 갱신한다.
+# ------------------------------------------------------------------
+
+default_style: clean_travel
+
+styles:
+  clean_travel:
+    description: "깔끔한 여행 감성 릴스. 잔잔한 모션 + 짧은 자막."
+    aspect_ratio: "9:16"
+    resolution: [1080, 1920]
+    fps: 30
+    average_shot_duration: 2.0
+    first_shot_duration: 1.8
+    last_shot_duration: 1.8
+    min_shot_duration: 1.2
+    max_shot_duration: 3.4
+    transitions:
+      default: "fade"
+      duration: 0.35
+      avoid_repeat: true
+    subtitle:
+      position: "lower_third"
+      max_lines: 2
+      max_chars_per_line: 16
+      tone: "clean"
+      keyword_emphasis: true
+    motion_preferences:
+      exterior: ["zoom_in", "slow_drift"]
+      room_wide: ["pan_left", "pan_right"]
+      bed: ["slow_drift", "zoom_in"]
+      bathroom: ["pan_left", "zoom_in"]
+      pool: ["slow_drift", "pan_right"]
+      view: ["slow_drift", "zoom_in"]
+      terrace: ["pan_up", "slow_drift"]
+      breakfast: ["zoom_in"]
+      lobby: ["pan_left", "pan_right"]
+      detail: ["zoom_in"]
+      night_view: ["slow_drift"]
+      default: ["zoom_in", "slow_drift"]
+    script_rules:
+      hook_length: "short"
+      cta_type: "save"
+      sentence_style: "여행 정보 저장 느낌"
+
+  informative:
+    description: "정보 전달형. 컷이 조금 더 길고 자막 텍스트가 많음."
+    aspect_ratio: "9:16"
+    resolution: [1080, 1920]
+    fps: 30
+    average_shot_duration: 2.3
+    first_shot_duration: 2.0
+    last_shot_duration: 2.0
+    min_shot_duration: 1.4
+    max_shot_duration: 3.6
+    transitions:
+      default: "cut"
+      duration: 0.2
+      avoid_repeat: true
+    subtitle:
+      position: "center"
+      max_lines: 2
+      max_chars_per_line: 18
+      tone: "bold"
+      keyword_emphasis: true
+    motion_preferences:
+      exterior: ["zoom_in"]
+      room_wide: ["pan_left", "pan_right"]
+      bed: ["zoom_in"]
+      bathroom: ["zoom_in"]
+      pool: ["slow_drift"]
+      view: ["zoom_in"]
+      terrace: ["pan_up"]
+      breakfast: ["zoom_in"]
+      lobby: ["pan_right"]
+      detail: ["zoom_in"]
+      night_view: ["slow_drift"]
+      default: ["zoom_in"]
+    script_rules:
+      hook_length: "medium"
+      cta_type: "info"
+      sentence_style: "핵심 정보 나열형"
+
+  review_style:
+    description: "후기형. 조금 더 개인적이고 친근한 톤."
+    aspect_ratio: "9:16"
+    resolution: [1080, 1920]
+    fps: 30
+    average_shot_duration: 2.0
+    first_shot_duration: 1.8
+    last_shot_duration: 1.8
+    min_shot_duration: 1.2
+    max_shot_duration: 3.4
+    transitions:
+      default: "fade"
+      duration: 0.3
+      avoid_repeat: true
+    subtitle:
+      position: "lower_third"
+      max_lines: 2
+      max_chars_per_line: 16
+      tone: "friendly"
+      keyword_emphasis: true
+    motion_preferences:
+      default: ["zoom_in", "pan_left", "slow_drift"]
+    script_rules:
+      hook_length: "short"
+      cta_type: "comment"
+      sentence_style: "실제 경험 후기형"
+
+  ad_style:
+    description: "광고형. 임팩트 있는 훅 + 빠른 컷 전환."
+    aspect_ratio: "9:16"
+    resolution: [1080, 1920]
+    fps: 30
+    average_shot_duration: 1.6
+    first_shot_duration: 1.4
+    last_shot_duration: 1.6
+    min_shot_duration: 0.9
+    max_shot_duration: 3.0
+    transitions:
+      default: "fade"
+      duration: 0.2
+      avoid_repeat: true
+    subtitle:
+      position: "lower_third"
+      max_lines: 2
+      max_chars_per_line: 14
+      tone: "bold"
+      keyword_emphasis: true
+    motion_preferences:
+      default: ["zoom_in", "pan_left", "pan_right"]
+    script_rules:
+      hook_length: "short"
+      cta_type: "book_now"
+      sentence_style: "판매 유도형"
+
+# tone(감성형/정보형/후기형/광고형) -> style preset 매핑
+tone_to_style:
+  emotional: clean_travel
+  informative: informative
+  review: review_style
+  ad: ad_style
+
+# ------------------------------------------------------------------
+# 레퍼런스 분석 로그 (사람이 정리한 규칙이 여기 계속 누적됨)
+# --update-style-rules 실행 시 새 항목이 append 된다.
+# ------------------------------------------------------------------
+reference_notes: []

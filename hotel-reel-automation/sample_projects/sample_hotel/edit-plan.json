@@ -1,0 +1,114 @@
+[
+  {
+    "shot_index": 1,
+    "image": "images/01_exterior.jpg",
+    "scene_type": "exterior",
+    "duration": 2.647,
+    "caption": "Porto, Portugal에서 감성 숙소 찾는다면 여기 저장해두세요.",
+    "motion": {
+      "preset": "zoom_in",
+      "start_scale": 1.0,
+      "end_scale": 1.14,
+      "direction": "in",
+      "travel_pct": 0
+    },
+    "transition_in": "none",
+    "transition_out": "fade"
+  },
+  {
+    "shot_index": 2,
+    "image": "images/02_lobby.jpg",
+    "scene_type": "lobby",
+    "duration": 2.941,
+    "caption": "강변 뷰가 예뻐요.",
+    "motion": {
+      "preset": "pan_left",
+      "start_scale": 1.0,
+      "end_scale": 1.12,
+      "direction": "left",
+      "travel_pct": 8
+    },
+    "transition_in": "fade",
+    "transition_out": "fade"
+  },
+  {
+    "shot_index": 3,
+    "image": "images/03_room_wide.jpg",
+    "scene_type": "room_wide",
+    "duration": 2.941,
+    "caption": "객실 인테리어가 감성적이에요.",
+    "motion": {
+      "preset": "pan_right",
+      "start_scale": 1.0,
+      "end_scale": 1.12,
+      "direction": "right",
+      "travel_pct": 8
+    },
+    "transition_in": "fade",
+    "transition_out": "fade"
+  },
+  {
+    "shot_index": 4,
+    "image": "images/06_view.jpg",
+    "scene_type": "view",
+    "duration": 2.941,
+    "caption": "위치가 좋아 관광 동선이 편해요.",
+    "motion": {
+      "preset": "slow_drift",
+      "start_scale": 1.0,
+      "end_scale": 1.08,
+      "direction": "diagonal",
+      "travel_pct": 4
+    },
+    "transition_in": "fade",
+    "transition_out": "fade"
+  },
+  {
+    "shot_index": 5,
+    "image": "images/07_terrace.jpg",
+    "scene_type": "terrace",
+    "duration": 2.941,
+    "caption": "조식 만족도가 높아요.",
+    "motion": {
+      "preset": "pan_up",
+      "start_scale": 1.0,
+      "end_scale": 1.12,
+      "direction": "up",
+      "travel_pct": 6
+    },
+    "transition_in": "fade",
+    "transition_out": "fade"
+  },
+  {
+    "shot_index": 6,
+    "image": "images/04_bed.jpg",
+    "scene_type": "bed",
+    "duration": 2.941,
+    "caption": "사진 찍기 좋은 분위기이에요.",
+    "motion": {
+      "preset": "slow_drift",
+      "start_scale": 1.0,
+      "end_scale": 1.08,
+      "direction": "diagonal",
+      "travel_pct": 4
+    },
+    "transition_in": "fade",
+    "transition_out": "fade"
+  },
+  {
+    "shot_index": 7,
+    "image": "images/05_bathroom.jpg",
+    "scene_type": "bathroom",
+    "duration": 2.647,
+    "caption": "Porto, Portugal 숙소 고민 중이라면 참고해보세요.\n저장해두고 여행 때 꺼내보세요.",
+    "motion": {
+      "preset": "pan_left",
+      "start_scale": 1.0,
+      "end_scale": 1.12,
+      "direction": "left",
+      "travel_pct": 8
+    },
+    "transition_in": "fade",
+    "transition_out": "none"
+  }
+]

@@ -1,0 +1,85 @@
+# subtitle-template.yaml
+# ------------------------------------------------------------------
+# 자막 디자인/레이아웃 설정. subtitle_generator.py와 renderer.py가 이 파일을 읽어
+# 자막 위치, 폰트, 강조 규칙을 결정한다. 여기 값만 바꾸면 코드 수정 없이
+# 자막 디자인을 바꿀 수 있다.
+# ------------------------------------------------------------------
+
+layouts:
+  lower_third:
+    position: "lower_third"       # lower_third | center | upper_third
+    margin_bottom_pct: 12         # 화면 하단에서부터 여백 (%)
+    margin_side_pct: 8
+    max_lines: 2
+    max_chars_per_line: 16
+    font_family: "NanumGothic, Apple SD Gothic Neo, sans-serif"
+    font_size_pct: 5.2            # 영상 높이 대비 폰트 크기 (%)
+    font_color: "#FFFFFF"
+    stroke_color: "#000000"
+    stroke_width_px: 3
+    box_enabled: true
+    box_color: "#000000"
+    box_opacity: 0.35
+    box_radius_px: 14
+    line_spacing_px: 8
+    fade_in_ms: 120
+    fade_out_ms: 120
+
+  center:
+    position: "center"
+    margin_bottom_pct: 0
+    margin_side_pct: 10
+    max_lines: 2
+    max_chars_per_line: 18
+    font_family: "NanumGothic, Apple SD Gothic Neo, sans-serif"
+    font_size_pct: 6.0
+    font_color: "#FFFFFF"
+    stroke_color: "#000000"
+    stroke_width_px: 4
+    box_enabled: false
+    box_color: "#000000"
+    box_opacity: 0.0
+    box_radius_px: 0
+    line_spacing_px: 10
+    fade_in_ms: 100
+    fade_out_ms: 100
+
+  upper_third:
+    position: "upper_third"
+    margin_bottom_pct: 0
+    margin_top_pct: 10
+    margin_side_pct: 8
+    max_lines: 2
+    max_chars_per_line: 16
+    font_family: "NanumGothic, Apple SD Gothic Neo, sans-serif"
+    font_size_pct: 5.0
+    font_color: "#FFFFFF"
+    stroke_color: "#000000"
+    stroke_width_px: 3
+    box_enabled: true
+    box_color: "#000000"
+    box_opacity: 0.35
+    box_radius_px: 14
+    line_spacing_px: 8
+    fade_in_ms: 120
+    fade_out_ms: 120
+
+# 톤 -> 강조 색상 (키워드 강조 시 사용)
+tone_emphasis_color:
+  clean: "#FFD84D"
+  bold: "#FF5C5C"
+  friendly: "#7CE0C6"
+
+# 자막 on/off 및 강조 단어 자동 추출 규칙
+rules:
+  subtitle_box_default: true
+  keyword_emphasis_default: true
+  emphasis_pos_hint:            # 강조 대상으로 우선하는 단어 패턴(간단 규칙 기반, 추후 NLP로 교체 가능)
+    - "뷰"
+    - "감성"
+    - "위치"
+    - "가성비"
+    - "조식"
+    - "인테리어"
+    - "저장"
+  min_display_seconds: 0.8      # 자막 한 줄이 최소 이 정도는 화면에 남아있어야 함

@@ -1,0 +1,18 @@
+{
+  "_comment": "center 자막 레이아웃 프리셋 (subtitle-template.yaml의 center와 동기화됨)",
+  "layout_id": "subtitle_layout_02",
+  "position": "center",
+  "margin_bottom_pct": 0,
+  "margin_side_pct": 10,
+  "max_lines": 2,
+  "max_chars_per_line": 18,
+  "font_family": "NanumGothic, Apple SD Gothic Neo, sans-serif",
+  "font_size_pct": 6.0,
+  "font_color": "#FFFFFF",
+  "stroke_color": "#000000",
+  "stroke_width_px": 4,
+  "box_enabled": false,
+  "box_color": "#000000",
+  "box_opacity": 0.0,
+  "box_radius_px": 0
+}

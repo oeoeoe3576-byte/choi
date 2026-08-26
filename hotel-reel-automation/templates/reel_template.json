@@ -1,0 +1,36 @@
+{
+  "_comment": "최종 렌더링에 사용되는 릴스 전체 템플릿 스키마. renderer.py가 edit-plan.json + motion-plan.json + subtitles.json을 이 형태로 합쳐서 소비한다.",
+  "project_name": "",
+  "style_preset": "clean_travel",
+  "aspect_ratio": "9:16",
+  "resolution": [1080, 1920],
+  "fps": 30,
+  "total_duration": 0.0,
+  "shots": [
+    {
+      "shot_index": 1,
+      "image": "images/01.jpg",
+      "scene_type": "exterior",
+      "start_time": 0.0,
+      "duration": 1.8,
+      "motion": {
+        "preset": "zoom_in",
+        "start_scale": 1.0,
+        "end_scale": 1.14
+      },
+      "transition_in": "fade",
+      "transition_out": "fade",
+      "subtitle": {
+        "text": "포르투에서 감성 숙소 찾는다면 여기 저장해두세요.",
+        "layout": "lower_third",
+        "emphasis_words": ["감성", "저장"]
+      }
+    }
+  ],
+  "bgm": {
+    "enabled": false,
+    "file": null,
+    "volume": 0.6
+  },
+  "output_file": "output/reel-final.mp4"
+}

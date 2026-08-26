@@ -1,0 +1,25 @@
+# scheduler-config.yaml
+# ------------------------------------------------------------------
+# 예약 렌더링(scheduler.py) 설정.
+# 이 시스템은 항상 떠 있는 데몬을 요구하지 않는다:
+#   1) --schedule "YYYY-MM-DD HH:MM" 으로 작업을 scheduled-jobs.json에 등록
+#   2) 등록 시점에 예약 시간이 이미 지났으면 즉시 실행
+#   3) 미래 시간이면, OS의 cron/at 등으로 아래 run_due 커맨드를 주기적으로
+#      실행하도록 등록하는 것을 권장 (scripts/schedule_project.sh 참고)
+#   4) `python -m src.main --run-due` 를 실행하면 실행 시각이 지난 예약 작업을
+#      모두 찾아 순차 렌더링한다.
+# ------------------------------------------------------------------
+
+jobs_file: "scheduled-jobs.json"   # hotel-reel-automation/ 루트 기준 상대경로
+timezone: "Asia/Seoul"
+
+retry:
+  max_attempts: 2
+  backoff_seconds: 30
+
+notify:
+  on_success: true
+  on_failure: true
+  # 실제 알림 채널(Slack/Email 등)은 2차 확장 포인트.
+  # 현재는 logs/run-log.md 및 scheduled-jobs.json 상태 업데이트로 대체.
+  channel: "log_only"

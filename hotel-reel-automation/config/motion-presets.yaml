@@ -1,0 +1,71 @@
+# motion-presets.yaml
+# ------------------------------------------------------------------
+# 이미지 모션 프리셋 정의. motion_planner.py가 scene_type별로
+# style-rules.yaml의 motion_preferences 순서를 참고해 여기서 실제 파라미터를 가져온다.
+# renderer.py(ffmpeg zoompan/crop 기반)가 이 파라미터로 실제 움직임을 만든다.
+#
+# 원칙:
+#   - 과도한 줌 금지 (max_zoom 준수)
+#   - 멀미 유발하는 빠른 이동 금지 (pan 속도는 shot 길이에 맞춰 자동 분배)
+#   - 슬라이드쇼처럼 보이지 않도록 항상 약한 움직임을 유지 (min_zoom_delta)
+# ------------------------------------------------------------------
+
+global_limits:
+  max_zoom: 1.18          # 원본 대비 최대 확대 배율
+  min_zoom_delta: 1.04    # "정지"로 보이지 않기 위한 최소 확대/이동 폭
+  max_pan_pct: 10         # 이미지 대비 최대 이동 비율(%)
+  ease: "ease_in_out"     # 가속/감속 커브
+
+presets:
+  zoom_in:
+    type: "zoom"
+    direction: "in"
+    start_scale: 1.0
+    end_scale: 1.14
+    anchor: "center"
+
+  zoom_out:
+    type: "zoom"
+    direction: "out"
+    start_scale: 1.14
+    end_scale: 1.0
+    anchor: "center"
+
+  pan_left:
+    type: "pan"
+    direction: "left"
+    scale: 1.12
+    travel_pct: 8
+
+  pan_right:
+    type: "pan"
+    direction: "right"
+    scale: 1.12
+    travel_pct: 8
+
+  pan_up:
+    type: "pan"
+    direction: "up"
+    scale: 1.12
+    travel_pct: 6
+
+  pan_down:
+    type: "pan"
+    direction: "down"
+    scale: 1.12
+    travel_pct: 6
+
+  slow_drift:
+    type: "drift"
+    scale: 1.08
+    travel_pct: 4
+    direction: "diagonal"
+
+  slight_parallax:
+    type: "parallax"
+    scale: 1.1
+    travel_pct: 5
+    direction: "diagonal_reverse"
+
+# scene_type이 style-rules에 없을 때 사용할 기본 순서
+fallback_order: ["zoom_in", "slow_drift", "pan_left", "pan_right"]

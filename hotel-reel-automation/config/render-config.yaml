@@ -1,0 +1,42 @@
+# render-config.yaml
+# ------------------------------------------------------------------
+# 렌더링 엔진(FFmpeg) 관련 설정. renderer.py가 이 값을 읽어 ffmpeg 명령을 구성한다.
+# ------------------------------------------------------------------
+
+engine: "ffmpeg"          # 현재는 ffmpeg만 지원. 추후 "remotion" 등 추가 가능(renderer.py 인터페이스 분리됨)
+ffmpeg_binary: "ffmpeg"   # PATH에 없으면 절대경로로 교체
+
+output:
+  width: 1080
+  height: 1920
+  fps: 30
+  video_codec: "libx264"
+  pixel_format: "yuv420p"
+  crf: 20
+  preset: "medium"
+  audio_codec: "aac"
+  audio_bitrate: "128k"
+  container: "mp4"
+  filename: "reel-final.mp4"
+
+bgm:
+  enabled: false             # 기본은 off. 프로젝트별 audio/bgm.mp3가 있으면 자동 on
+  volume: 0.6
+  fade_out_seconds: 1.0
+
+thumbnail:
+  enabled: true
+  filename: "thumbnail.jpg"
+  source: "first_shot"       # first_shot | best_shot
+  overlay_text: true
+
+subtitle_burn_in:
+  enabled: true              # true면 ffmpeg drawtext로 영상에 직접 번인
+  font_path_candidates:
+    - "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf"
+    - "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+    - "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+
+logging:
+  keep_intermediate_files: false   # true면 clips/*.mp4 등 중간 산출물을 보존 (디버깅용)
+  verbose: false

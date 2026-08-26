@@ -1,0 +1,100 @@
+[
+  {
+    "shot_index": 1,
+    "scene_type": "exterior",
+    "motion": "zoom_in",
+    "start_scale": 1.0,
+    "end_scale": 1.14,
+    "direction": "in",
+    "travel_pct": 0,
+    "image_to_video": {
+      "use_image_to_video": false,
+      "provider": "stub",
+      "reason": "image_to_video disabled in MVP config"
+    }
+  },
+  {
+    "shot_index": 2,
+    "scene_type": "lobby",
+    "motion": "pan_left",
+    "start_scale": 1.0,
+    "end_scale": 1.12,
+    "direction": "left",
+    "travel_pct": 8,
+    "image_to_video": {
+      "use_image_to_video": false,
+      "provider": "stub",
+      "reason": "image_to_video disabled in MVP config"
+    }
+  },
+  {
+    "shot_index": 3,
+    "scene_type": "room_wide",
+    "motion": "pan_right",
+    "start_scale": 1.0,
+    "end_scale": 1.12,
+    "direction": "right",
+    "travel_pct": 8,
+    "image_to_video": {
+      "use_image_to_video": false,
+      "provider": "stub",
+      "reason": "image_to_video disabled in MVP config"
+    }
+  },
+  {
+    "shot_index": 4,
+    "scene_type": "view",
+    "motion": "slow_drift",
+    "start_scale": 1.0,
+    "end_scale": 1.08,
+    "direction": "diagonal",
+    "travel_pct": 4,
+    "image_to_video": {
+      "use_image_to_video": false,
+      "provider": "stub",
+      "reason": "image_to_video disabled in MVP config"
+    }
+  },
+  {
+    "shot_index": 5,
+    "scene_type": "terrace",
+    "motion": "pan_up",
+    "start_scale": 1.0,
+    "end_scale": 1.12,
+    "direction": "up",
+    "travel_pct": 6,
+    "image_to_video": {
+      "use_image_to_video": false,
+      "provider": "stub",
+      "reason": "image_to_video disabled in MVP config"
+    }
+  },
+  {
+    "shot_index": 6,
+    "scene_type": "bed",
+    "motion": "slow_drift",
+    "start_scale": 1.0,
+    "end_scale": 1.08,
+    "direction": "diagonal",
+    "travel_pct": 4,
+    "image_to_video": {
+      "use_image_to_video": false,
+      "provider": "stub",
+      "reason": "image_to_video disabled in MVP config"
+    }
+  },
+  {
+    "shot_index": 7,
+    "scene_type": "bathroom",
+    "motion": "pan_left",
+    "start_scale": 1.0,
+    "end_scale": 1.12,
+    "direction": "left",
+    "travel_pct": 8,
+    "image_to_video": {
+      "use_image_to_video": false,
+      "provider": "stub",
+      "reason": "image_to_video disabled in MVP config"
+    }
+  }
+]

@@ -1,0 +1,9 @@
+# hotel-reel-automation 실행에 필요한 Python 패키지
+Pillow>=10.0.0
+PyYAML>=6.0
+python-dotenv>=1.0.0
+
+# 실제 LLM(Claude)로 대본/캡션 품질을 높이고 싶을 때만 필요 (선택 사항).
+# ANTHROPIC_API_KEY가 없으면 자동으로 오프라인 템플릿 모드로 동작하므로
+# 설치하지 않아도 파이프라인은 100% 동작한다.
+anthropic>=0.34.0
