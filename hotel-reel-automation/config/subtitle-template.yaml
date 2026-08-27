@@ -38,7 +38,7 @@ layouts:
     font_size_pct: 7.5            # 짧은 한 줄 자막이라 크게 써도 잘림 걱정이 적다
     font_color: "#FFFFFF"
     stroke_color: "#000000"
-    stroke_width_px: 7            # 박스가 없으므로 외곽선을 굵게 줘서 가독성 확보
+    stroke_width_px: 4            # 손글씨체 얇은 획이 묻히지 않도록 과하지 않게
     shadow_px: 2
     box_enabled: false
     box_color: "#000000"
@@ -58,7 +58,7 @@ layouts:
     font_size_pct: 8.0
     font_color: "#FFFFFF"
     stroke_color: "#000000"
-    stroke_width_px: 7
+    stroke_width_px: 4
     shadow_px: 2
     box_enabled: false
     box_color: "#000000"
@@ -79,7 +79,7 @@ layouts:
     font_size_pct: 7.5
     font_color: "#FFFFFF"
     stroke_color: "#000000"
-    stroke_width_px: 7
+    stroke_width_px: 4
     shadow_px: 2
     box_enabled: false
     box_color: "#000000"
