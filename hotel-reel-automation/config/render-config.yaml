@@ -31,7 +31,12 @@ thumbnail:
   overlay_text: true
 
 subtitle_burn_in:
-  enabled: true              # true면 ffmpeg의 ass(libass) 필터로 영상에 직접 번인
+  # 기본값 off: 이 파이프라인의 핵심은 "사진 -> 모션이 들어간 영상"이고,
+  # 자막은 사용자가 CapCut 등에서 직접 넣는 경우가 많다. script.md/
+  # subtitles.json/subtitles.srt는 끄더라도 항상 그대로 생성되니,
+  # 그 자막 데이터를 편집툴에 따로 불러와 쓰면 된다. 영상에 직접 구워
+  # 넣고 싶으면 true로 바꾸면 된다 (코드 변경 없이 이 값만 바꾸면 됨).
+  enabled: false
   # 이 경로들은 "한글 폰트가 시스템에 있는지" 확인하는 용도로만 쓰인다
   # (없으면 자막 번인을 건너뜀). 실제 렌더링에 쓰이는 폰트 이름은
   # config/subtitle-template.yaml의 layouts.*.font_family 값(예: NanumGothic)이며,

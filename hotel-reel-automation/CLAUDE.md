@@ -7,9 +7,15 @@
 ## 이 프로젝트가 하는 일
 
 숙소 사진 폴더 + `input.md`(숙소 정보)를 입력받아, 9:16 숏폼 릴스 제작에 필요한
-전 과정(대본 → 컷 편집 계획 → 모션 → 자막 → mp4 렌더링 → 썸네일 → 인스타 캡션)을
+전 과정(대본 → 컷 편집 계획 → 모션 → mp4 렌더링 → 썸네일 → 인스타 캡션)을
 자동으로 처리하는 Python CLI 파이프라인이다. 웹서비스가 아니라 Claude Code /
 터미널에서 바로 실행하는 재사용형 워크플로우로 설계됐다.
+
+**핵심은 "사진을 모션이 들어간 영상으로 만드는 것"(renderer.py의 zoompan/
+전환/크롭)이지, 자막이 아니다.** 자막은 부가 기능이라 기본적으로 영상에
+굽지 않는다(`config/render-config.yaml`의 `subtitle_burn_in.enabled: false`
+가 기본값) — 대신 `subtitles.srt`/`subtitles.json`/`script.md`는 항상
+생성되므로, 사용자가 CapCut 등에서 직접 자막을 넣을 수 있다.
 
 ## 빠른 실행
 
@@ -53,8 +59,12 @@ project_loader → image_classifier → script_generator → shot_planner
   필요한 필드를 물어보고 생성한다.
 - **사진 없이 구조만 테스트**: `python3 scripts/generate_mock_images.py --project <경로>`
   로 mock 이미지를 만든 뒤 `--skip-render`로 빠르게 데이터 단계만 검증한다.
-- **렌더링 결과가 이상할 때**: `logs/ffmpeg.log`를 먼저 확인한다. 자막은
-  libass(`ass` 필터)로 번인되며, `src/pipeline/renderer.py`의
+- **렌더링 결과가 이상할 때**: `logs/ffmpeg.log`를 먼저 확인한다. 이미지
+  모션(zoompan)이 이상하면 `src/utils/ffmpeg_utils.py`의
+  `build_motion_expr`와 `config/motion-presets.yaml`을 본다 — 여기가 이
+  파이프라인의 핵심이다. 자막은 기본적으로 꺼져 있지만(`subtitle_burn_in.
+  enabled: false`), 켜져 있는 프로젝트라면 libass(`ass` 필터)로 번인되며,
+  `src/pipeline/renderer.py`의
   `write_ass_file`(폭 기준 폰트 자동 축소 로직)과
   `config/subtitle-template.yaml`의 `max_chars_per_line`를 함께 살펴본다.
   키워드 강조 색상은 `style-rules.yaml`의 `subtitle.tone`(clean/bold/friendly)

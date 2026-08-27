@@ -206,8 +206,24 @@ python -m src.main --update-style-rules --reference-dir <레퍼런스 폴더>
 
 - CapCut 등 GUI 자동화 클릭 방식보다 환경 의존성이 적다 (헤드리스 서버/컨테이너에서 안정적).
 - 완전히 코드/설정 파일로 파라미터화할 수 있다 — config만 바꾸면 결과가 바뀐다.
-- 컷마다 `scale→crop→zoompan(모션)→fade(전환)→ass(자막, libass)` 필터 체인을 만들고,
-  concat demuxer로 이어붙인 뒤 mp4로 인코딩한다 (`src/pipeline/renderer.py`).
+- 컷마다 `scale→crop→zoompan(모션)→fade(전환)→(선택) ass(자막, libass)` 필터
+  체인을 만들고, concat demuxer로 이어붙인 뒤 mp4로 인코딩한다
+  (`src/pipeline/renderer.py`). 이 파이프라인의 핵심은 "사진을 모션이 들어간
+  영상으로 만드는 것"이고, 자막은 부가 기능이다.
+
+## 자막을 영상에 굽지 않고 따로 쓰고 싶을 때
+
+기본값이 이미 이렇게 동작한다: `config/render-config.yaml`의
+`subtitle_burn_in.enabled: false`가 기본값이라, `output/reel-final.mp4`에는
+자막이 전혀 그려지지 않는다 (순수하게 사진 + 모션 + 전환만 있는 클린 영상).
+대신 대본/자막 데이터는 그대로 생성되니, CapCut 등 편집 툴에서 자막만
+따로 불러와 쓰면 된다:
+- `subtitles.srt` — 표준 SRT 자막 파일. 대부분의 편집기가 바로 임포트 가능.
+- `subtitles.json` — 자막 텍스트/타이밍/강조 단어 원본 데이터.
+- `script.md` — 대본을 사람이 읽기 좋게 정리한 버전.
+
+영상에 자막을 직접 굽고 싶다면 `config/render-config.yaml`의
+`subtitle_burn_in.enabled`를 `true`로 바꾸면 된다 (코드 수정 불필요).
 
 ## 향후 확장 포인트 (구조는 이미 열어둠)
 

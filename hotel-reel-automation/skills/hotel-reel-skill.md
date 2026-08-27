@@ -31,8 +31,14 @@ Claude Code가 자연어 요청을 `hotel-reel-automation/` 파이프라인 CLI 
    pip install -r requirements.txt
    which ffmpeg || (echo "ffmpeg가 없습니다. apt-get install -y ffmpeg 등으로 설치하세요.")
    ```
-3. 자막은 기본적으로 손글씨 폰트(Nanum Pen Script)로 번인된다. `fonts-nanum`
-   뿐 아니라 `fonts-nanum-extra`도 있어야 손글씨 계열이 설치된다. 없으면 안내한다:
+3. **자막은 기본적으로 영상에 굽지 않는다** (`config/render-config.yaml`의
+   `subtitle_burn_in.enabled: false`). 이 파이프라인의 핵심은 사진을 모션이
+   들어간 영상으로 만드는 것이고, 자막은 사용자가 CapCut 등에서 직접 넣는
+   경우가 많기 때문이다. `subtitles.srt`/`subtitles.json`은 자막 번인 여부와
+   무관하게 항상 생성되므로, 그대로 편집 툴에 불러와 쓰면 된다. 사용자가
+   "자막도 영상에 같이 구워줘"라고 명시적으로 요청할 때만
+   `subtitle_burn_in.enabled: true`로 바꾸고, 그 경우 손글씨 폰트(Nanum Pen
+   Script)가 필요하니 설치를 확인한다:
    ```bash
    fc-list | grep -qi "nanum pen" || echo "손글씨 폰트가 없습니다. 'apt-get install -y fonts-nanum fonts-nanum-extra' 권장."
    ```
