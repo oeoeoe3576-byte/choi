@@ -68,11 +68,21 @@ pip install -r requirements.txt
 # macOS: brew install ffmpeg
 # Debian/Ubuntu: sudo apt-get install -y ffmpeg
 
-# 한글 자막 렌더링을 위한 폰트 (Nanum 계열 권장)
-# macOS: 시스템 기본 한글 폰트로도 동작 (config/render-config.yaml의
-#         font_path_candidates에 macOS 폰트 경로를 추가하면 됨)
-# Debian/Ubuntu: sudo apt-get install -y fonts-nanum
+# 한글 자막 렌더링을 위한 폰트
+# 기본 자막 폰트는 손글씨 스타일의 "Nanum Pen Script"(나눔손글씨 펜)다.
+# fonts-nanum 뿐 아니라 fonts-nanum-extra 도 설치해야 손글씨 계열이 들어있다.
+# macOS: https://hangeul.naver.com/font 에서 나눔손글씨 폰트를 받아 설치
+#         (config/render-config.yaml의 font_path_candidates에 macOS 폰트
+#          경로를 추가하면 "폰트 있는지 확인" 로직도 정상 동작한다)
+# Debian/Ubuntu: sudo apt-get install -y fonts-nanum fonts-nanum-extra
 ```
+
+손글씨 느낌 자막 폰트를 다른 걸로 바꾸고 싶다면 `config/subtitle-template.yaml`의
+`font_family` 값만 바꾸면 된다 (설치돼 있어야 함, 콤마로 구분된 첫 번째 이름을
+사용). 무료/재배포 가능한 나눔 계열 후보:
+- `Nanum Pen Script` (나눔손글씨 펜) — 기본값. 손글씨 느낌 + 가독성 균형이 좋음.
+- `Nanum Brush Script` (나눔손글씨 붓) — 붓글씨에 가까운 더 개성 있는 스타일.
+- `NanumBarunpen` (나눔바른펜) — 손글씨보다 둥근 고딕에 가까움, 가독성 최우선일 때.
 
 `ANTHROPIC_API_KEY`는 선택 사항이다. 없어도 규칙 기반 템플릿으로 대본/캡션이
 100% 생성된다 (오프라인 동작). 설정하면 대본/캡션 품질이 실제 LLM 수준으로

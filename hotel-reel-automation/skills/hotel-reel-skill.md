@@ -31,9 +31,10 @@ Claude Code가 자연어 요청을 `hotel-reel-automation/` 파이프라인 CLI 
    pip install -r requirements.txt
    which ffmpeg || (echo "ffmpeg가 없습니다. apt-get install -y ffmpeg 등으로 설치하세요.")
    ```
-3. 자막 렌더링에 한글 폰트가 필요하다. 없으면 안내한다:
+3. 자막은 기본적으로 손글씨 폰트(Nanum Pen Script)로 번인된다. `fonts-nanum`
+   뿐 아니라 `fonts-nanum-extra`도 있어야 손글씨 계열이 설치된다. 없으면 안내한다:
    ```bash
-   fc-list | grep -qi nanum || echo "한글 폰트가 없습니다. 'apt-get install -y fonts-nanum' 권장."
+   fc-list | grep -qi "nanum pen" || echo "손글씨 폰트가 없습니다. 'apt-get install -y fonts-nanum fonts-nanum-extra' 권장."
    ```
 
 ## 프로젝트 폴더 규칙

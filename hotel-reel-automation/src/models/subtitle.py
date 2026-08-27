@@ -7,16 +7,21 @@ from dataclasses import dataclass, field
 
 @dataclass
 class SubtitleCue:
-    index: int
-    start: float          # seconds
-    end: float             # seconds
-    lines: list[str] = field(default_factory=list)
+    index: int              # 영상 전체 기준 순번 (subtitles.json / .srt용)
+    shot_index: int          # 이 자막이 속한 컷(Shot) 번호. 한 컷 안에 여러 개의
+                              # 짧은 SubtitleCue가 순차적으로 나올 수 있다.
+    start: float             # 영상 전체 기준 시작 시각 (seconds)
+    end: float                # 영상 전체 기준 종료 시각 (seconds)
+    local_start: float = 0.0  # 이 컷(클립) 자체의 로컬 타임라인 기준 시작 시각
+    local_end: float = 0.0    # 이 컷(클립) 자체의 로컬 타임라인 기준 종료 시각
+    lines: list[str] = field(default_factory=list)  # 항상 길이 1 (한 줄 고정)
     emphasis_words: list[str] = field(default_factory=list)
     layout: str = "lower_third"
 
     def to_dict(self) -> dict:
         return {
             "index": self.index,
+            "shot_index": self.shot_index,
             "start": round(self.start, 3),
             "end": round(self.end, 3),
             "lines": self.lines,

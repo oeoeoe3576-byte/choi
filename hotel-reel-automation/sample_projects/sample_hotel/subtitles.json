@@ -1,21 +1,59 @@
 [
   {
     "index": 1,
+    "shot_index": 1,
     "start": 0.0,
+    "end": 0.441,
+    "lines": [
+      "Porto,"
+    ],
+    "text": "Porto,",
+    "emphasis_words": [],
+    "layout": "center"
+  },
+  {
+    "index": 2,
+    "shot_index": 1,
+    "start": 0.441,
+    "end": 1.176,
+    "lines": [
+      "Portugal에서"
+    ],
+    "text": "Portugal에서",
+    "emphasis_words": [],
+    "layout": "center"
+  },
+  {
+    "index": 3,
+    "shot_index": 1,
+    "start": 1.176,
+    "end": 1.912,
+    "lines": [
+      "감성 숙소 찾는다면"
+    ],
+    "text": "감성 숙소 찾는다면",
+    "emphasis_words": [
+      "감성"
+    ],
+    "layout": "center"
+  },
+  {
+    "index": 4,
+    "shot_index": 1,
+    "start": 1.912,
     "end": 2.647,
     "lines": [
-      "Porto,",
-      "Portugal에서 감성 숙소 찾는다면 여기 저장해두세요."
+      "여기 저장해두세요."
     ],
-    "text": "Porto,\nPortugal에서 감성 숙소 찾는다면 여기 저장해두세요.",
+    "text": "여기 저장해두세요.",
     "emphasis_words": [
-      "감성",
       "저장"
     ],
     "layout": "center"
   },
   {
-    "index": 2,
+    "index": 5,
+    "shot_index": 2,
     "start": 2.647,
     "end": 5.588,
     "lines": [
@@ -28,69 +66,181 @@
     "layout": "center"
   },
   {
-    "index": 3,
+    "index": 6,
+    "shot_index": 3,
     "start": 5.588,
-    "end": 8.529,
+    "end": 7.157,
     "lines": [
-      "객실 인테리어가 감성적이에요."
+      "객실 인테리어가"
     ],
-    "text": "객실 인테리어가 감성적이에요.",
+    "text": "객실 인테리어가",
     "emphasis_words": [
-      "감성",
       "인테리어"
     ],
     "layout": "center"
   },
   {
-    "index": 4,
-    "start": 8.529,
-    "end": 11.471,
+    "index": 7,
+    "shot_index": 3,
+    "start": 7.157,
+    "end": 8.529,
     "lines": [
-      "위치가 좋아 관광 동선이",
-      "편해요."
+      "감성적이에요."
     ],
-    "text": "위치가 좋아 관광 동선이\n편해요.",
+    "text": "감성적이에요.",
+    "emphasis_words": [
+      "감성"
+    ],
+    "layout": "center"
+  },
+  {
+    "index": 8,
+    "shot_index": 4,
+    "start": 8.529,
+    "end": 10.087,
+    "lines": [
+      "위치가 좋아 관광"
+    ],
+    "text": "위치가 좋아 관광",
     "emphasis_words": [
       "위치"
     ],
     "layout": "center"
   },
   {
-    "index": 5,
-    "start": 11.471,
-    "end": 14.412,
+    "index": 9,
+    "shot_index": 4,
+    "start": 10.087,
+    "end": 11.471,
     "lines": [
-      "조식 만족도가 높아요."
+      "동선이 편해요."
     ],
-    "text": "조식 만족도가 높아요.",
+    "text": "동선이 편해요.",
+    "emphasis_words": [],
+    "layout": "center"
+  },
+  {
+    "index": 10,
+    "shot_index": 5,
+    "start": 11.471,
+    "end": 13.342,
+    "lines": [
+      "조식 만족도가"
+    ],
+    "text": "조식 만족도가",
     "emphasis_words": [
       "조식"
     ],
     "layout": "center"
   },
   {
-    "index": 6,
-    "start": 14.412,
-    "end": 17.353,
+    "index": 11,
+    "shot_index": 5,
+    "start": 13.342,
+    "end": 14.412,
     "lines": [
-      "사진 찍기 좋은 분위기이에요."
+      "높아요."
     ],
-    "text": "사진 찍기 좋은 분위기이에요.",
+    "text": "높아요.",
     "emphasis_words": [],
     "layout": "center"
   },
   {
-    "index": 7,
-    "start": 17.353,
-    "end": 20.0,
+    "index": 12,
+    "shot_index": 6,
+    "start": 14.412,
+    "end": 15.98,
     "lines": [
-      "Porto, Portugal 숙소 고민 중이라면 참고해보세요.",
-      "저장해두고 여행 때 꺼내보세요."
+      "사진 찍기 좋은"
     ],
-    "text": "Porto, Portugal 숙소 고민 중이라면 참고해보세요.\n저장해두고 여행 때 꺼내보세요.",
+    "text": "사진 찍기 좋은",
+    "emphasis_words": [],
+    "layout": "center"
+  },
+  {
+    "index": 13,
+    "shot_index": 6,
+    "start": 15.98,
+    "end": 17.353,
+    "lines": [
+      "분위기이에요."
+    ],
+    "text": "분위기이에요.",
+    "emphasis_words": [],
+    "layout": "center"
+  },
+  {
+    "index": 14,
+    "shot_index": 7,
+    "start": 17.353,
+    "end": 17.691,
+    "lines": [
+      "Porto,"
+    ],
+    "text": "Porto,",
+    "emphasis_words": [],
+    "layout": "center"
+  },
+  {
+    "index": 15,
+    "shot_index": 7,
+    "start": 17.691,
+    "end": 18.141,
+    "lines": [
+      "Portugal"
+    ],
+    "text": "Portugal",
+    "emphasis_words": [],
+    "layout": "center"
+  },
+  {
+    "index": 16,
+    "shot_index": 7,
+    "start": 18.141,
+    "end": 18.705,
+    "lines": [
+      "숙소 고민 중이라면"
+    ],
+    "text": "숙소 고민 중이라면",
+    "emphasis_words": [],
+    "layout": "center"
+  },
+  {
+    "index": 17,
+    "shot_index": 7,
+    "start": 18.705,
+    "end": 19.099,
+    "lines": [
+      "참고해보세요."
+    ],
+    "text": "참고해보세요.",
+    "emphasis_words": [],
+    "layout": "center"
+  },
+  {
+    "index": 18,
+    "shot_index": 7,
+    "start": 19.099,
+    "end": 19.662,
+    "lines": [
+      "저장해두고 여행 때"
+    ],
+    "text": "저장해두고 여행 때",
     "emphasis_words": [
       "저장"
     ],
+    "layout": "center"
+  },
+  {
+    "index": 19,
+    "shot_index": 7,
+    "start": 19.662,
+    "end": 20.0,
+    "lines": [
+      "꺼내보세요."
+    ],
+    "text": "꺼내보세요.",
+    "emphasis_words": [],
     "layout": "center"
   }
 ]

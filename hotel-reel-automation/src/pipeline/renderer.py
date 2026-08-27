@@ -37,7 +37,7 @@ def _escape_filter_path(path: str) -> str:
 
 
 def _build_shot_filter(
-    shot: Shot, cue: SubtitleCue | None, cfg: dict, sub_layout: dict,
+    shot: Shot, shot_cues: list[SubtitleCue], cfg: dict, sub_layout: dict,
     emphasis_color: str, fade_seconds: float, ass_path: Path | None,
     fontsize: int, font_path: str | None,
 ) -> str:
@@ -69,8 +69,8 @@ def _build_shot_filter(
         out_start = max(shot.duration - fd, 0.0)
         filters.append(f"fade=t=out:st={out_start:.3f}:d={fd:.3f}")
 
-    if cfg["subtitle_burn_in"]["enabled"] and cue is not None and cue.lines and ass_path is not None:
-        write_ass_file(cue, sub_layout, W, H, emphasis_color, ass_path, fontsize, font_path)
+    if cfg["subtitle_burn_in"]["enabled"] and shot_cues and ass_path is not None:
+        write_ass_file(shot_cues, sub_layout, W, H, emphasis_color, ass_path, fontsize, font_path)
         filters.append(f"ass={_escape_filter_path(str(ass_path))}")
 
     return ",".join(filters)
@@ -165,65 +165,84 @@ def _fit_fontsize_for_cue(lines: list[str], font_path: str | None, base_fontsize
     return max(int(base_fontsize * scale * 0.96), 20)
 
 
-def write_ass_file(cue: SubtitleCue, layout: dict, video_width: int, video_height: int,
+def write_ass_file(cues: list[SubtitleCue], layout: dict, video_width: int, video_height: int,
                     emphasis_color: str, out_path: Path, base_fontsize: int,
                     font_path: str | None) -> None:
     """libass(ass 필터)로 렌더링할 .ass 자막 파일을 컷(클립) 하나 분량으로 만든다.
 
-    자막 배경 박스는 ASS의 기본 "줄마다 박스"(BorderStyle=3) 대신, 실제 텍스트
-    크기를 PIL로 측정해 여러 줄을 감싸는 사각형 하나를 직접 그린다 (Layer 0).
-    그 위에 텍스트를 outline만 있는 스타일로 얹는다 (Layer 1). 이렇게 해야
-    두 줄 자막에서 줄마다 폭이 다른 박스 두 개가 계단처럼 겹쳐 보이는 문제가
-    없다.
+    한 컷 안에 짧은 자막이 여러 개 있으면(대본 문장이 길어서 쪼개진 경우),
+    각자의 local_start~local_end 구간에 맞춰 순서대로 짧게 지나가는 여러 개의
+    Dialogue를 만든다. 자막은 항상 한 줄이라 배경 박스도 그 한 줄 크기에
+    맞춰 딱 맞게(선택적으로) 그린다.
     """
     margin_side_pct = layout.get("margin_side_pct", 8)
     usable_width = video_width * (1 - 2 * margin_side_pct / 100)
-    fontsize = _fit_fontsize_for_cue(cue.lines, font_path, base_fontsize, usable_width)
+    box_enabled = layout.get("box_enabled", False)
+    stroke_w = max(layout.get("stroke_width_px", 3), 1)
+    shadow = layout.get("shadow_px", 0)
 
     font_family = layout.get("font_family", "NanumGothic").split(",")[0].strip()
-    max_line_w, line_height, block_h = _measure_text_block(cue.lines, font_path, fontsize)
-
-    pad_h, pad_v = fontsize * 0.5, fontsize * 0.32
-    box_w = max_line_w + 2 * pad_h
-    box_h = block_h + 2 * pad_v
-    box_left = (video_width - box_w) / 2
-
-    position = layout["position"]
-    if position == "lower_third":
-        margin_v_px = video_height * layout["margin_bottom_pct"] / 100
-        box_top = video_height - margin_v_px - box_h
-    elif position == "upper_third":
-        margin_v_px = video_height * layout.get("margin_top_pct", 10) / 100
-        box_top = margin_v_px
-    else:
-        box_top = (video_height - box_h) / 2
-
-    text_center_x = video_width / 2
-    text_center_y = box_top + box_h / 2
-
     base_color = _hex_to_ass_color(layout["font_color"], 1.0)
     outline_color = _hex_to_ass_color(layout["stroke_color"], 1.0)
     emphasis_ass_color = _hex_to_ass_color(emphasis_color, 1.0)
-    box_enabled = layout.get("box_enabled", False)
 
-    text = _build_ass_line_text(cue.lines, cue.emphasis_words, emphasis_ass_color, base_color)
-    end_ts = _ass_timestamp(cue.end - cue.start)
+    position = layout["position"]
 
     events = []
-    if box_enabled:
-        # "&H{AA}{BB}{GG}{RR}" 형식에서 알파 2자리(index 2:4)와 색상 6자리(index 4:10)를
-        # 분리해 \1c(색)와 \1a(알파) override 태그에 각각 넣는다.
-        box_fill = _hex_to_ass_color(layout["box_color"], layout.get("box_opacity", 0.35))
-        box_alpha_hex, box_rgb_hex = box_fill[2:4], box_fill[4:10]
+    for i, cue in enumerate(cues):
+        fontsize = _fit_fontsize_for_cue(cue.lines, font_path, base_fontsize, usable_width)
+        max_line_w, _, block_h = _measure_text_block(cue.lines, font_path, fontsize)
+
+        text_center_x = video_width / 2
+        if position == "lower_third":
+            margin_v_px = video_height * layout["margin_bottom_pct"] / 100
+            text_center_y = video_height - margin_v_px - block_h / 2
+        elif position == "upper_third":
+            margin_v_px = video_height * layout.get("margin_top_pct", 10) / 100
+            text_center_y = margin_v_px + block_h / 2
+        else:
+            text_center_y = video_height / 2
+
+        start_ts = _ass_timestamp(cue.local_start)
+        end_ts = _ass_timestamp(cue.local_end)
+        text = _build_ass_line_text(cue.lines, cue.emphasis_words, emphasis_ass_color, base_color)
+        style_name = f"Text{fontsize}"
+
+        if box_enabled:
+            pad_h, pad_v = fontsize * 0.5, fontsize * 0.32
+            box_w = max_line_w + 2 * pad_h
+            box_h = block_h + 2 * pad_v
+            box_left = (video_width - box_w) / 2
+            box_top = text_center_y - box_h / 2
+            # "&H{AA}{BB}{GG}{RR}" 형식에서 알파 2자리(index 2:4)와 색상 6자리(index
+            # 4:10)를 분리해 \1c(색)와 \1a(알파) override 태그에 각각 넣는다.
+            box_fill = _hex_to_ass_color(layout["box_color"], layout.get("box_opacity", 0.35))
+            box_alpha_hex, box_rgb_hex = box_fill[2:4], box_fill[4:10]
+            events.append(
+                f"Dialogue: 0,{start_ts},{end_ts},Box,,0,0,0,,"
+                f"{{\\an7\\pos({box_left:.1f},{box_top:.1f})\\1c&H{box_rgb_hex}&\\1a&H{box_alpha_hex}&\\p1}}"
+                f"m 0 0 l {box_w:.0f} 0 l {box_w:.0f} {box_h:.0f} l 0 {box_h:.0f}{{\\p0}}"
+            )
+
         events.append(
-            f"Dialogue: 0,0:00:00.00,{end_ts},Box,,0,0,0,,"
-            f"{{\\an7\\pos({box_left:.1f},{box_top:.1f})\\1c&H{box_rgb_hex}&\\1a&H{box_alpha_hex}&\\p1}}"
-            f"m 0 0 l {box_w:.0f} 0 l {box_w:.0f} {box_h:.0f} l 0 {box_h:.0f}{{\\p0}}"
+            f"Dialogue: 1,{start_ts},{end_ts},{style_name},,0,0,0,,"
+            f"{{\\an5\\pos({text_center_x:.1f},{text_center_y:.1f})}}{text}"
         )
-    events.append(
-        f"Dialogue: 1,0:00:00.00,{end_ts},Text,,0,0,0,,"
-        f"{{\\an5\\pos({text_center_x:.1f},{text_center_y:.1f})}}{text}"
-    )
+
+    # 컷 안에서 자막마다 실제 사용된 폰트 크기가 다를 수 있어(드문 오버플로 축소
+    # 케이스), 등장한 폰트 크기별로 Style을 하나씩 만든다.
+    used_sizes = sorted({_fit_fontsize_for_cue(c.lines, font_path, base_fontsize, usable_width) for c in cues})
+    style_lines = [
+        f"Style: Text{fs},{font_family},{fs},{base_color},&H000000FF,{outline_color},"
+        f"&H00000000,-1,0,0,0,100,100,0,0,1,{stroke_w},{shadow},5,0,0,0,1"
+        for fs in used_sizes
+    ]
+    if box_enabled:
+        box_fs = used_sizes[0] if used_sizes else base_fontsize
+        style_lines.append(
+            f"Style: Box,{font_family},{box_fs},&H00FFFFFF,&H000000FF,&H00000000,"
+            f"&H00000000,-1,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1"
+        )
 
     ass_content = f"""[Script Info]
 ScriptType: v4.00+
@@ -233,8 +252,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Text,{font_family},{fontsize},{base_color},&H000000FF,{outline_color},&H00000000,-1,0,0,0,100,100,0,0,1,{max(layout.get('stroke_width_px', 3), 1)},0,5,0,0,0,1
-Style: Box,{font_family},{fontsize},&H00FFFFFF,&H000000FF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
+{chr(10).join(style_lines)}
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -244,7 +262,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 def _ass_timestamp(seconds: float) -> str:
-    seconds = max(seconds, 0.1)
+    seconds = max(seconds, 0.0)
     h = int(seconds // 3600)
     m = int((seconds % 3600) // 60)
     s = seconds % 60
@@ -286,7 +304,12 @@ def render_project(
     global_fontsize = compute_global_fontsize(layout, cfg["output"]["width"], cfg["output"]["height"])
 
     clips_dir = ensure_dir(project.output_dir / "_clips")
-    cue_by_index = {c.index: c for c in cues}
+    # 한 컷 안에 짧은 자막이 여러 개 붙을 수 있으므로 shot_index -> [cue, ...] 로 묶는다.
+    cues_by_shot: dict[int, list[SubtitleCue]] = {}
+    for c in cues:
+        cues_by_shot.setdefault(c.shot_index, []).append(c)
+    for shot_cues in cues_by_shot.values():
+        shot_cues.sort(key=lambda c: c.local_start)
 
     clip_paths: list[Path] = []
     for shot in shots:
@@ -298,7 +321,7 @@ def render_project(
         cfg_for_shot = dict(cfg)
         cfg_for_shot["subtitle_burn_in"] = {**cfg["subtitle_burn_in"], "enabled": subtitle_enabled}
         filter_str = _build_shot_filter(
-            shot, cue_by_index.get(shot.shot_index), cfg_for_shot, layout, emphasis_color,
+            shot, cues_by_shot.get(shot.shot_index, []), cfg_for_shot, layout, emphasis_color,
             fade_seconds, ass_path, global_fontsize, font_path,
         )
         clip_path = clips_dir / f"shot_{shot.shot_index:02d}.mp4"
