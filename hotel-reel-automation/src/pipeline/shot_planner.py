@@ -8,24 +8,12 @@ script.json의 hook/scenes/closing(+cta)을 컷 단위로 쪼개고, 각 컷에 
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from src.models.project import Project
 from src.models.shot import Motion, Shot
 from src.pipeline.image_selector import select_shot_images
-from src.utils.file_utils import read_yaml, write_json
+from src.pipeline.style_resolver import load_style
+from src.utils.file_utils import write_json
 from src.utils.time_utils import distribute_durations
-
-CONFIG_DIR = Path(__file__).resolve().parent.parent.parent / "config"
-
-
-def load_style(project: Project) -> dict:
-    style_rules = read_yaml(CONFIG_DIR / "style-rules.yaml")
-    style_name = project.style_preset or style_rules["tone_to_style"].get(
-        project.tone, style_rules["default_style"]
-    )
-    style = style_rules["styles"].get(style_name, style_rules["styles"][style_rules["default_style"]])
-    return {"style_name": style_name, **style}
 
 
 def build_shot_captions(script: dict) -> list[str]:

@@ -139,6 +139,67 @@ styles:
       cta_type: "book_now"
       sentence_style: "판매 유도형"
 
+  insta_reels_hook:
+    description: >
+      2026-08 실제 인스타 릴스 레퍼런스 10개(roomfinder.kr 5개, checkin_unnie
+      5개)를 컷 경계 자동 감지 + 대표 프레임 시각 분석으로 뜯어본 결과를
+      반영한 프리셋. 공통 구조는 "가격/희소성 훅(0~2초) -> 외관→수영장→
+      객실뷰→침실→욕조→부대시설 순으로 0.8~1.5초 컷을 빠르게 훑기 -> 질문형
+      CTA로 마무리". 참고: 레퍼런스는 실제 촬영 영상 클립이라 카메라 무빙
+      자체는 재현 대상이 아니고(우리 소스는 정지 사진), 편집 리듬·자막
+      스타일·스토리 구조만 반영했다. tone/--tone과 무관하게 쓰려면 input.md에
+      `style_preset: insta_reels_hook`을 직접 지정한다.
+    aspect_ratio: "9:16"
+    resolution: [1080, 1920]
+    fps: 30
+    average_shot_duration: 1.5
+    first_shot_duration: 1.0
+    last_shot_duration: 1.6
+    min_shot_duration: 0.6
+    max_shot_duration: 2.2
+    # 레퍼런스 실측 컷 수(15~20초 영상에 10~20컷, 평균 컷 길이 0.8~1.5초)에
+    # 최대한 맞춘 값. 템플릿(오프라인) 모드는 GENERIC_FILLERS를 순환해서
+    # 채우기 때문에 실측치(예: 20초 영상에 17컷)까지 그대로 올리면 같은
+    # 필러 문장이 너무 자주 반복돼 오히려 부자연스러워, 컷 수는 그보다
+    # 약간 보수적으로 잡았다. ANTHROPIC_API_KEY로 LLM 모드를 쓰면 매 컷마다
+    # 실제로 다른 문장이 나오니 그때는 이 값을 더 올려도 된다.
+    scene_count_by_length:
+      15: 8
+      20: 11
+      30: 18
+    transitions:
+      default: "cut"
+      duration: 0.1
+      avoid_repeat: true
+    subtitle:
+      position: "bold_top"
+      max_lines: 1
+      max_chars_per_line: 14
+      tone: "price"
+      keyword_emphasis: true
+    motion_preferences:
+      exterior: ["zoom_in"]
+      room_wide: ["pan_left", "pan_right"]
+      bed: ["zoom_in"]
+      bathroom: ["zoom_in"]
+      pool: ["zoom_in", "slow_drift"]
+      view: ["zoom_in"]
+      terrace: ["zoom_in"]
+      breakfast: ["zoom_in"]
+      lobby: ["pan_right"]
+      detail: ["zoom_in"]
+      night_view: ["slow_drift"]
+      default: ["zoom_in"]
+    script_rules:
+      hook_length: "short"
+      cta_type: "question"
+      sentence_style: "가격/희소성 임팩트 훅 + 대화체 질문형 마무리 (레퍼런스 반영)"
+      # {place}/{hotel}/{price} 플레이스홀더 지원. price_info가 있으면
+      # hook_template_with_price를, 없으면 hook_template을 쓴다.
+      hook_template_with_price: "{place}, 1박 {price}..!?"
+      hook_template: "사람들이 아직 잘 모르는 {place} {hotel}"
+      closing_template: "{place} 여행 계획 중이라면 눈여겨보세요."
+
 # tone(감성형/정보형/후기형/광고형) -> style preset 매핑
 tone_to_style:
   emotional: clean_travel

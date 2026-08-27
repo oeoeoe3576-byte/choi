@@ -77,7 +77,22 @@ project_loader → image_classifier → script_generator → shot_planner
   확인한다 (컷 수 × 평균 길이 ≈ 목표 길이가 되어야 클램핑으로 인한 길이 손실이
   적다).
 - **편집 스타일 프리셋 추가**: `config/style-rules.yaml`의 `styles:` 아래 새
-  키를 추가하고 `tone_to_style`에 매핑하면 된다. 코드 변경 불필요.
+  키를 추가하고 `tone_to_style`에 매핑하면 된다. 코드 변경 불필요. tone과
+  무관하게 특정 프로젝트에만 쓰고 싶으면 `tone_to_style`에 매핑하는 대신
+  해당 프로젝트의 `input.md`에 `style_preset: <스타일명>`을 직접 지정한다
+  (`src/pipeline/style_resolver.py`가 tone보다 이 값을 우선한다). 컷 수를
+  기존 `SCENE_COUNT_BY_LENGTH`(15/20/30초 -> 3/5/8, script_generator.py)와
+  다르게 쓰고 싶은 스타일이면 그 스타일 안에 `scene_count_by_length:
+  {15: .., 20: .., 30: ..}`를 추가하면 그 스타일에서만 오버라이드된다.
+  예시: `insta_reels_hook` 프리셋 — 2026-08에 실제 인스타 릴스 레퍼런스
+  10개(컷 경계 자동 감지 + 대표 프레임 시각 분석)를 분석해 반영한 스타일로,
+  컷당 1.5초 안팎의 빠른 전환 + 볼드 고딕 자막(`subtitle-template.yaml`의
+  `bold_top` 레이아웃) + 가격 훅(`script_rules.hook_template_with_price`,
+  `project.price_info` 필요) + 질문형 CTA(`cta_type: question`) 구조다.
+  스타일별로 훅/클로징 문구를 완전히 바꾸고 싶으면 `script_rules.
+  hook_template` / `hook_template_with_price` / `closing_template`에
+  `{place}`/`{hotel}`/`{price}` 플레이스홀더로 문구를 넣으면
+  `script_generator.py`가 톤 기반 기본 문구보다 우선해서 쓴다.
 
 ## 테스트/검증 방법
 

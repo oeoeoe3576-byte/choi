@@ -68,6 +68,31 @@ layouts:
     fade_in_ms: 80
     fade_out_ms: 80
 
+  # 2026-08 실제 인스타 릴스 레퍼런스 10개(roomfinder.kr 5개, checkin_unnie 5개)
+  # 분석 결과 반영. 두 계정 모두 손글씨체가 아니라 통통한 볼드 고딕 자막을
+  # 화면 상단부에 굵은 외곽선으로 썼다. style-rules.yaml의 insta_reels_hook
+  # 프리셋이 이 레이아웃을 쓴다.
+  bold_top:
+    position: "upper_third"
+    margin_bottom_pct: 0
+    margin_top_pct: 20
+    margin_side_pct: 8
+    max_lines: 1
+    max_chars_per_line: 14
+    font_family: "NanumSquareRound ExtraBold, NanumGothicExtraBold, sans-serif"
+    font_size_pct: 8.5
+    font_color: "#FFFFFF"
+    stroke_color: "#000000"
+    stroke_width_px: 6
+    shadow_px: 2
+    box_enabled: false
+    box_color: "#000000"
+    box_opacity: 0.0
+    box_radius_px: 0
+    line_spacing_px: 8
+    fade_in_ms: 30
+    fade_out_ms: 30
+
   upper_third:
     position: "upper_third"
     margin_bottom_pct: 0
@@ -94,6 +119,9 @@ tone_emphasis_color:
   clean: "#FFD84D"
   bold: "#FF5C5C"
   friendly: "#7CE0C6"
+  # 레퍼런스 영상(roomfinder.kr 등)에서 "1박 8만원대" 같은 가격 문구의 숫자
+  # 부분만 노란색으로 강조하는 패턴을 반영. insta_reels_hook 프리셋 전용.
+  price: "#FFD84D"
 
 # 자막 on/off 및 강조 단어 자동 추출 규칙
 rules:
@@ -107,4 +135,8 @@ rules:
     - "조식"
     - "인테리어"
     - "저장"
+    - "만원"
+    - "특가"
+    - "할인"
+    - "무료"
   min_display_seconds: 0.6      # 쪼개진 짧은 자막 한 개가 최소 이 정도는 화면에 남아있어야 함

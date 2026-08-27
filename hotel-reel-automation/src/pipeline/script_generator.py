@@ -16,6 +16,7 @@ from pathlib import Path
 
 from src.adapters import llm_adapter
 from src.models.project import Project
+from src.pipeline.style_resolver import load_style
 from src.utils.file_utils import write_text, write_json
 
 PROMPTS_DIR = Path(__file__).resolve().parent.parent.parent / "prompts"
@@ -41,6 +42,8 @@ CTA_TEMPLATES = {
     "info": "더 궁금한 점은 댓글로 남겨주세요.",
     "comment": "궁금한 점 있으면 댓글 남겨주세요.",
     "book_now": "지금 바로 예약 링크를 확인해보세요.",
+    # 레퍼런스 릴스(checkin_unnie 등)에서 자주 보이는 대화체 질문형 마무리.
+    "question": "이번 휴가로 여기 어떠세요?",
 }
 
 # highlight_points가 목표 컷 수보다 적을 때, 같은 문장을 그대로 반복하는 대신
@@ -113,15 +116,33 @@ def _naturalize(point: str) -> str:
 
 
 def _template_script(project: Project) -> dict:
-    scene_count = SCENE_COUNT_BY_LENGTH.get(project.video_length, 5)
+    # 스타일 프리셋이 컷 수/훅·클로징 문구를 오버라이드할 수 있다 (예:
+    # insta_reels_hook은 tone과 무관하게 "가격 훅 + 질문형 CTA" 구조를 쓴다).
+    # 스타일에 오버라이드가 없으면 기존처럼 톤(tone) 기반 기본값을 그대로 쓴다.
+    style = load_style(project)
+    script_rules = style.get("script_rules", {})
+
+    scene_count = (
+        style.get("scene_count_by_length", {}).get(project.video_length)
+        or SCENE_COUNT_BY_LENGTH.get(project.video_length, 5)
+    )
     place = project.location or project.hotel_name
-    hook = HOOK_TEMPLATES.get(project.tone, HOOK_TEMPLATES["emotional"]).format(
-        place=place, hotel=project.hotel_name
+
+    hook_template = None
+    if project.price_info and script_rules.get("hook_template_with_price"):
+        hook_template = script_rules["hook_template_with_price"]
+    hook_template = (
+        hook_template or script_rules.get("hook_template") or HOOK_TEMPLATES.get(project.tone, HOOK_TEMPLATES["emotional"])
     )
-    closing = CLOSING_TEMPLATES.get(project.tone, CLOSING_TEMPLATES["emotional"]).format(
-        place=place, hotel=project.hotel_name
+    hook = hook_template.format(place=place, hotel=project.hotel_name, price=project.price_info)
+
+    closing_template = script_rules.get("closing_template") or CLOSING_TEMPLATES.get(
+        project.tone, CLOSING_TEMPLATES["emotional"]
     )
-    cta = CTA_TEMPLATES.get(project.cta_type, CTA_TEMPLATES["save"])
+    closing = closing_template.format(place=place, hotel=project.hotel_name, price=project.price_info)
+
+    cta_type = script_rules.get("cta_type") or project.cta_type
+    cta = CTA_TEMPLATES.get(cta_type, CTA_TEMPLATES["save"])
 
     points = project.highlight_points or [f"{project.hotel_name}의 매력적인 공간"]
     naturalized_points = [_naturalize(p) for p in points]
