@@ -133,8 +133,15 @@ python -m src.main --project ./sample_projects/sample_hotel
 # 톤/길이 오버라이드
 python -m src.main --project ./sample_projects/sample_hotel --tone review --length 15
 
-# 렌더링 없이 구조/데이터만 생성 (빠른 반복 테스트용)
+# 렌더링 없이 구조/데이터만 생성 (빠른 반복 테스트용, 대본 확인용으로도 사용)
 python -m src.main --project ./sample_projects/sample_hotel --skip-render
+
+# 대본(script.md)을 먼저 확인/수정한 뒤, 그 버전 그대로 렌더링
+python -m src.main --project ./sample_projects/sample_hotel --skip-render   # 1) 대본만 생성
+#   -> script.md를 읽고 확인. 고치고 싶으면 script.json의 hook/scenes/closing/cta를 직접 수정
+python -m src.main --project ./sample_projects/sample_hotel --reuse-script  # 2) 승인된 대본 그대로 렌더링
+#   (--reuse-script 없이 다시 실행하면 대본을 처음부터 재생성한다 - LLM 모드에서는
+#    문구가 미묘하게 달라질 수 있으니, "확인한 그대로" 렌더링하려면 꼭 --reuse-script를 쓴다)
 
 # 예약 실행 (미래 시각) — 등록만 됨. 실제 실행은 아래 "예약 실행" 절 참고
 python -m src.main --project ./sample_projects/sample_hotel --schedule "2026-08-28 09:00"

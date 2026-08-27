@@ -63,13 +63,54 @@ Claude Code가 자연어 요청을 `hotel-reel-automation/` 파이프라인 CLI 
 python3 scripts/generate_mock_images.py --project <프로젝트 폴더>
 ```
 
+## 표준 실행 흐름 — 대본 먼저 확인받고 렌더링
+
+**새 릴스를 만들 때는 곧바로 최종 렌더링까지 가지 말고, 아래 2단계로 진행하는
+것이 기본값이다** (사용자가 "확인 없이 바로 만들어줘"라고 명시하지 않는 한):
+
+**1단계 — 대본만 생성해서 보여준다**
+```bash
+python -m src.main --project <경로> --skip-render
+```
+이 명령은 렌더링 없이 `script.md`까지만 만든다. `script.md`(또는
+`script.json`의 hook/scenes/closing/cta)를 읽어서, 아래처럼 **줄바꿈마다
+불릿으로** 사용자에게 그대로 보여주고 확인을 요청한다:
+
+```
+* Porto, Portugal에서 감성 숙소 찾는다면 여기 저장해두세요.   (hook)
+* 강변 뷰가 예뻐요.                                          (scene)
+* 객실 인테리어가 감성적이에요.                                (scene)
+* ...
+* Porto, Portugal 숙소 고민 중이라면 참고해보세요.             (closing)
+* 저장해두고 여행 때 꺼내보세요.                               (cta)
+
+이대로 진행할까요? 수정하고 싶은 줄이 있으면 알려주세요.
+```
+
+**2단계 — 확인 후, 그 대본 그대로 렌더링한다**
+
+- 사용자가 그대로 좋다고 하면: `python -m src.main --project <경로> --reuse-script`
+  (주의: `--reuse-script` 없이 다시 실행하면 대본을 처음부터 다시 만들어서,
+  `ANTHROPIC_API_KEY`가 설정된 LLM 모드에서는 방금 승인받은 문구와 미묘하게
+  달라질 수 있다. 반드시 `--reuse-script`를 써서 "승인한 그대로"가 보장되게 한다.)
+- 사용자가 특정 줄을 고쳐달라고 하면: `<프로젝트 폴더>/script.json`의 해당
+  필드(`hook`/`scenes`의 배열 항목/`closing`/`cta`)를 요청받은 문구로 직접
+  수정한 뒤, 같은 방식으로 다시 보여주고 재확인받는다. 확인되면
+  `--reuse-script`로 렌더링한다.
+- `--reuse-script` 사용 시 `--tone`/`--length`는 원칙적으로 다시 주지 않는다
+  (이미 승인된 대본은 1단계에서 쓴 톤/길이에 맞춰 만들어졌기 때문).
+
+톤/길이를 바꾸고 싶다는 요청이면 1단계로 돌아가 `--tone`/`--length`를 바꿔
+다시 대본부터 생성하고 재확인 받는다.
+
 ## 명령 매핑
 
 | 사용자 요청 예시 | 실행할 CLI 명령 |
 |---|---|
-| "이 폴더로 릴스 만들어줘" | `python -m src.main --project <경로>` |
-| "20초짜리 감성형으로 만들어줘" | `python -m src.main --project <경로> --length 20 --tone emotional` |
-| "구조만 먼저 확인해줘 (렌더링은 나중에)" | `python -m src.main --project <경로> --skip-render` |
+| "이 폴더로 릴스 만들어줘" (표준 흐름 1단계) | `python -m src.main --project <경로> --skip-render` |
+| "이대로 진행해줘" (표준 흐름 2단계, 확인 후) | `python -m src.main --project <경로> --reuse-script` |
+| "확인 없이 바로 만들어줘" | `python -m src.main --project <경로>` |
+| "20초짜리 감성형으로 만들어줘" | `python -m src.main --project <경로> --length 20 --tone emotional --skip-render` (먼저 대본 확인) |
 | "내일 오전 9시에 렌더링 예약해줘" | `python -m src.main --project <경로> --schedule "YYYY-MM-DD HH:MM"` |
 | "예약 목록 보여줘" | `python -m src.main --list-schedules` |
 | "예약 job_xxxx 취소해줘" | `python -m src.main --cancel-schedule job_xxxx` |
@@ -84,7 +125,10 @@ python3 scripts/generate_mock_images.py --project <프로젝트 폴더>
 1. CLI가 반환한 JSON의 `steps`를 확인해 어떤 단계가 실패했는지 파악한다.
    실패한 단계가 있으면 `<프로젝트 폴더>/logs/run-log.md`와
    `logs/ffmpeg.log`(렌더링 실패 시)를 읽어 원인을 사용자에게 설명한다.
-2. 성공하면 아래 산출물을 사용자에게 안내한다:
+2. `--skip-render`(1단계) 성공 시: 위 "표준 실행 흐름"대로 대본을 보여주고
+   확인을 기다린다 — 이 시점에는 아직 최종 산출물을 전달하지 않는다.
+3. 렌더링(2단계, `--reuse-script` 또는 확인 없이 바로 실행한 경우)까지
+   성공하면 아래 산출물을 사용자에게 안내한다:
    - `script.md` / `script.json` — 대본
    - `edit-plan.json` — 컷 편집 계획
    - `motion-plan.json` — 컷별 모션
@@ -92,7 +136,7 @@ python3 scripts/generate_mock_images.py --project <프로젝트 폴더>
    - `caption.txt` — 인스타 캡션 3종
    - `output/reel-final.mp4` — 최종 영상
    - `output/thumbnail.jpg` — 썸네일
-3. 결과물 파일(특히 `output/reel-final.mp4`)은 SendUserFile 등으로 사용자에게
+4. 결과물 파일(특히 `output/reel-final.mp4`)은 SendUserFile 등으로 사용자에게
    바로 전달하는 것을 우선 고려한다.
 
 ## 편집 규칙을 바꾸고 싶을 때

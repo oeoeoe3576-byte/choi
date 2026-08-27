@@ -21,7 +21,7 @@ from src.pipeline import (
     shot_planner,
     subtitle_generator,
 )
-from src.utils.file_utils import write_json
+from src.utils.file_utils import read_json, write_json
 from src.utils.logger import RunLogger
 
 
@@ -32,9 +32,31 @@ class PipelineError(RuntimeError):
         self.original = original
 
 
+def _load_existing_script(project: Project) -> dict:
+    """--reuse-script: 이미 만들어진 script.json을 그대로 쓴다 (재생성 안 함).
+
+    사람이 먼저 script.md/script.json을 보고 확인(또는 직접 수정)한 뒤,
+    그 승인된 버전 그대로 렌더링하고 싶을 때 쓴다. LLM 모드에서는 재생성할
+    때마다 문구가 조금씩 달라질 수 있어, "확인한 그대로" 렌더링하려면
+    재생성 대신 이 경로를 써야 한다.
+    """
+    script_path = project.project_dir / "script.json"
+    if not script_path.exists():
+        raise FileNotFoundError(
+            f"--reuse-script 옵션을 썼지만 {script_path} 가 없습니다. "
+            "먼저 --skip-render로 대본부터 생성한 뒤 확인/수정하고 다시 실행하세요."
+        )
+    data = read_json(script_path)
+    missing = [k for k in ("hook", "scenes", "closing", "cta") if k not in data]
+    if missing:
+        raise ValueError(f"script.json에 필수 필드가 없습니다: {missing}")
+    return {"hook": data["hook"], "scenes": data["scenes"], "closing": data["closing"], "cta": data["cta"]}
+
+
 def run_pipeline(
     project_dir: str, tone: str | None = None, length: int | None = None,
     skip_render: bool = False, image_to_video_enabled: bool = False,
+    reuse_script: bool = False,
 ) -> dict:
     project = project_loader.load_project(project_dir)
     project = project_loader.apply_overrides(project, tone=tone, length=length)
@@ -76,7 +98,15 @@ def run_pipeline(
     )
     write_json(project.project_dir / "image-analysis.json", image_analysis)
 
-    script = step("script_generator", lambda: script_generator.run(project))
+    if reuse_script:
+        script = step("script_generator", lambda: _load_existing_script(project))
+        # script.md도 재생성된 것처럼 맞춰준다 (일관성 유지, 실제 캡션/렌더는
+        # 이미 로드한 script 그대로 사용하므로 대본 내용 자체는 안 바뀐다).
+        from src.pipeline.script_generator import render_script_md
+        from src.utils.file_utils import write_text
+        write_text(project.project_dir / "script.md", render_script_md(project, script, "reused"))
+    else:
+        script = step("script_generator", lambda: script_generator.run(project))
 
     shots, style = step(
         "shot_planner", lambda: shot_planner.plan_shots(project, script, image_analysis)

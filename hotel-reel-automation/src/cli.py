@@ -28,6 +28,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--reference-dir", help="--update-style-rules와 함께 사용")
     parser.add_argument("--skip-render", action="store_true",
                          help="렌더링(ffmpeg) 단계를 건너뛰고 구조/데이터만 생성 (mock 테스트용)")
+    parser.add_argument("--reuse-script", action="store_true",
+                         help="대본을 새로 만들지 않고 기존 script.json을 그대로 써서 렌더링. "
+                              "--skip-render로 먼저 대본을 만들어 사람이 확인/수정한 뒤, "
+                              "그 승인된 버전 그대로 영상을 만들고 싶을 때 사용")
     parser.add_argument("--image-to-video", action="store_true",
                          help="특정 컷에 AI image-to-video 적용 여부 판단을 활성화 (MVP 스텁)")
     return parser
@@ -41,6 +45,7 @@ def _run_project(args) -> int:
             length=args.length,
             skip_render=args.skip_render,
             image_to_video_enabled=args.image_to_video,
+            reuse_script=args.reuse_script,
         )
     except orchestrator.PipelineError as exc:
         # 원시 traceback 대신, 어떤 단계에서 왜 실패했는지 바로 알 수 있는 형태로 출력한다.

@@ -45,8 +45,12 @@ project_loader → image_classifier → script_generator → shot_planner
 
 ## 자주 하는 작업
 
-- **새 숙소 프로젝트로 릴스 만들기**: `skills/hotel-reel-skill.md`의 "명령 매핑"
-  표를 따른다. `input.md`가 없으면 사용자에게 필요한 필드를 물어보고 생성한다.
+- **새 숙소 프로젝트로 릴스 만들기**: `skills/hotel-reel-skill.md`의 "표준 실행
+  흐름"을 따른다 — `--skip-render`로 대본만 먼저 만들어 사용자에게 확인받고,
+  승인되면 `--reuse-script`로 그 대본 그대로 렌더링한다(재생성 없이). 사용자가
+  대본 일부를 고쳐달라면 `script.json`의 hook/scenes/closing/cta를 직접 수정한
+  뒤 다시 확인받고 `--reuse-script`로 진행한다. `input.md`가 없으면 사용자에게
+  필요한 필드를 물어보고 생성한다.
 - **사진 없이 구조만 테스트**: `python3 scripts/generate_mock_images.py --project <경로>`
   로 mock 이미지를 만든 뒤 `--skip-render`로 빠르게 데이터 단계만 검증한다.
 - **렌더링 결과가 이상할 때**: `logs/ffmpeg.log`를 먼저 확인한다. 자막은
