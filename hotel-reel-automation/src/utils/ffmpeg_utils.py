@@ -89,30 +89,35 @@ def build_motion_expr(preset_type: str, direction: str, start_scale: float,
     if preset_type == "pan":
         scale = max(start_scale, end_scale, 1.05)
         z = f"{scale}"
-        travel = f"(iw-iw/zoom)*{travel_pct / 100.0}"
+        # travel_pct는 "이미지 대비 이동 비율(%)"이다 (motion-presets.yaml 주석).
+        # 확대된 크롭창의 잔여 여백(iw-iw/zoom)에 대한 비율로 계산하면, 그 여백
+        # 자체가 이미 이미지의 일부(zoom에 따라 몇 %)뿐이라 이중으로 작아져서
+        # 실제 화면에서는 거의 안 움직이는 것처럼 보이는 버그가 있었다.
+        # iw(전체 폭) 기준으로 바로 계산해야 travel_pct가 의도한 크기로 나온다.
+        travel = f"iw*{travel_pct / 100.0}"
         if direction == "left":
-            x = f"(iw/2-(iw/zoom/2))+({travel})*(0.5-on/{idx})"
+            x = f"clip((iw/2-(iw/zoom/2))+({travel})*(0.5-on/{idx}),0,iw-iw/zoom)"
             y = "ih/2-(ih/zoom/2)"
         elif direction == "right":
-            x = f"(iw/2-(iw/zoom/2))-({travel})*(0.5-on/{idx})"
+            x = f"clip((iw/2-(iw/zoom/2))-({travel})*(0.5-on/{idx}),0,iw-iw/zoom)"
             y = "ih/2-(ih/zoom/2)"
         elif direction == "up":
-            travel_y = f"(ih-ih/zoom)*{travel_pct / 100.0}"
+            travel_y = f"ih*{travel_pct / 100.0}"
             x = "iw/2-(iw/zoom/2)"
-            y = f"(ih/2-(ih/zoom/2))+({travel_y})*(0.5-on/{idx})"
+            y = f"clip((ih/2-(ih/zoom/2))+({travel_y})*(0.5-on/{idx}),0,ih-ih/zoom)"
         else:  # down
-            travel_y = f"(ih-ih/zoom)*{travel_pct / 100.0}"
+            travel_y = f"ih*{travel_pct / 100.0}"
             x = "iw/2-(iw/zoom/2)"
-            y = f"(ih/2-(ih/zoom/2))-({travel_y})*(0.5-on/{idx})"
+            y = f"clip((ih/2-(ih/zoom/2))-({travel_y})*(0.5-on/{idx}),0,ih-ih/zoom)"
         return MotionExpr(z, x, y)
 
     if preset_type in ("drift", "parallax"):
         z = f"{start_scale}+({end_scale}-{start_scale})*on/{idx}" if end_scale != start_scale else f"{start_scale}"
-        travel_x = f"(iw-iw/zoom)*{travel_pct / 100.0}"
-        travel_y = f"(ih-ih/zoom)*{travel_pct / 100.0}"
+        travel_x = f"iw*{travel_pct / 100.0}"
+        travel_y = f"ih*{travel_pct / 100.0}"
         sign = -1 if preset_type == "parallax" or direction == "diagonal_reverse" else 1
-        x = f"(iw/2-(iw/zoom/2))+({sign})*({travel_x})*(0.5-on/{idx})"
-        y = f"(ih/2-(ih/zoom/2))+({sign})*({travel_y})*(0.5-on/{idx})"
+        x = f"clip((iw/2-(iw/zoom/2))+({sign})*({travel_x})*(0.5-on/{idx}),0,iw-iw/zoom)"
+        y = f"clip((ih/2-(ih/zoom/2))+({sign})*({travel_y})*(0.5-on/{idx}),0,ih-ih/zoom)"
         return MotionExpr(z, x, y)
 
     # fallback: 정적 줌인

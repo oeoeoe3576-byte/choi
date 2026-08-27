@@ -55,10 +55,10 @@
     "caption": "위치가 좋아 관광 동선이 편해요.",
     "motion": {
       "preset": "slow_drift",
-      "start_scale": 1.0,
-      "end_scale": 1.08,
+      "start_scale": 1.05,
+      "end_scale": 1.1,
       "direction": "diagonal",
-      "travel_pct": 4
+      "travel_pct": 6
     },
     "transition_in": "fade",
     "transition_out": "fade"
@@ -87,10 +87,10 @@
     "caption": "사진 찍기 좋은 분위기이에요.",
     "motion": {
       "preset": "slow_drift",
-      "start_scale": 1.0,
-      "end_scale": 1.08,
+      "start_scale": 1.05,
+      "end_scale": 1.1,
       "direction": "diagonal",
-      "travel_pct": 4
+      "travel_pct": 6
     },
     "transition_in": "fade",
     "transition_out": "fade"

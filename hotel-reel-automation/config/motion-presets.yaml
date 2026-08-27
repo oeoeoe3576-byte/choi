@@ -57,14 +57,20 @@ presets:
 
   slow_drift:
     type: "drift"
-    scale: 1.08
-    travel_pct: 4
+    # zoom이 1.0(줌 없음)에서 시작하면 크롭창에 이동할 여백이 없어서
+    # travel_pct를 아무리 키워도 화면상으로는 거의 안 움직이는 것처럼 보인다
+    # (실제로 있었던 버그). 그래서 처음부터 살짝 확대된 상태(1.05)에서
+    # 시작해 항상 이동할 여백을 확보한다.
+    start_scale: 1.05
+    end_scale: 1.10
+    travel_pct: 6
     direction: "diagonal"
 
   slight_parallax:
     type: "parallax"
-    scale: 1.1
-    travel_pct: 5
+    start_scale: 1.06
+    end_scale: 1.10
+    travel_pct: 6
     direction: "diagonal_reverse"
 
 # scene_type이 style-rules에 없을 때 사용할 기본 순서
