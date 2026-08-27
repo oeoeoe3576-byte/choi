@@ -1,6 +1,6 @@
 [
   {
-    "image": "images/01_exterior.jpg",
+    "image": "_normalized/01_exterior.jpg",
     "scene_type": "exterior",
     "quality_score": 60,
     "narrative_priority": 0,
@@ -8,23 +8,23 @@
     "order_in_folder": 0
   },
   {
-    "image": "images/02_lobby.jpg",
+    "image": "_normalized/02_lobby.jpg",
     "scene_type": "lobby",
-    "quality_score": 40,
+    "quality_score": 60,
     "narrative_priority": 1,
     "classification_method": "filename_keyword",
     "order_in_folder": 1
   },
   {
-    "image": "images/03_room_wide.jpg",
+    "image": "_normalized/03_room_wide.jpg",
     "scene_type": "room_wide",
-    "quality_score": 40,
+    "quality_score": 60,
     "narrative_priority": 2,
     "classification_method": "filename_keyword",
     "order_in_folder": 2
   },
   {
-    "image": "images/04_bed.jpg",
+    "image": "_normalized/04_bed.jpg",
     "scene_type": "bed",
     "quality_score": 60,
     "narrative_priority": 5,
@@ -32,7 +32,7 @@
     "order_in_folder": 3
   },
   {
-    "image": "images/05_bathroom.jpg",
+    "image": "_normalized/05_bathroom.jpg",
     "scene_type": "bathroom",
     "quality_score": 60,
     "narrative_priority": 6,
@@ -40,7 +40,7 @@
     "order_in_folder": 4
   },
   {
-    "image": "images/06_view.jpg",
+    "image": "_normalized/06_view.jpg",
     "scene_type": "view",
     "quality_score": 60,
     "narrative_priority": 3,
@@ -48,7 +48,7 @@
     "order_in_folder": 5
   },
   {
-    "image": "images/07_terrace.jpg",
+    "image": "_normalized/07_terrace.jpg",
     "scene_type": "terrace",
     "quality_score": 60,
     "narrative_priority": 4,
@@ -56,7 +56,7 @@
     "order_in_folder": 6
   },
   {
-    "image": "images/08_pool.jpg",
+    "image": "_normalized/08_pool.jpg",
     "scene_type": "pool",
     "quality_score": 60,
     "narrative_priority": 7,
@@ -64,7 +64,7 @@
     "order_in_folder": 7
   },
   {
-    "image": "images/09_breakfast.jpg",
+    "image": "_normalized/09_breakfast.jpg",
     "scene_type": "breakfast",
     "quality_score": 60,
     "narrative_priority": 8,
@@ -72,7 +72,7 @@
     "order_in_folder": 8
   },
   {
-    "image": "images/10_detail.jpg",
+    "image": "_normalized/10_detail.jpg",
     "scene_type": "detail",
     "quality_score": 60,
     "narrative_priority": 10,
@@ -80,7 +80,7 @@
     "order_in_folder": 9
   },
   {
-    "image": "images/11_night_view.jpg",
+    "image": "_normalized/11_night_view.jpg",
     "scene_type": "night_view",
     "quality_score": 60,
     "narrative_priority": 9,
@@ -88,7 +88,7 @@
     "order_in_folder": 10
   },
   {
-    "image": "images/12_view.jpg",
+    "image": "_normalized/12_view.jpg",
     "scene_type": "view",
     "quality_score": 60,
     "narrative_priority": 3,

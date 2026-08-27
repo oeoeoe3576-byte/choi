@@ -20,3 +20,23 @@
 - [11:51:49] ▶ **thumbnail_generator** 시작
 - [11:51:50] ✅ **thumbnail_generator** 완료
 - [11:51:50] ℹ️ 파이프라인 완료
+- [14:56:04] ℹ️ 프로젝트 로드: porto-riverside-reel (Porto Riverside Hotel)
+- [14:56:04] ▶ **image_normalizer** 시작
+- [14:56:04] ✅ **image_normalizer** 완료
+- [14:56:04] ▶ **image_classifier** 시작
+- [14:56:04] ✅ **image_classifier** 완료
+- [14:56:04] ▶ **script_generator** 시작
+- [14:56:04] ✅ **script_generator** 완료
+- [14:56:04] ▶ **shot_planner** 시작
+- [14:56:04] ✅ **shot_planner** 완료
+- [14:56:04] ▶ **motion_planner** 시작
+- [14:56:04] ✅ **motion_planner** 완료
+- [14:56:04] ▶ **subtitle_generator** 시작
+- [14:56:04] ✅ **subtitle_generator** 완료
+- [14:56:04] ▶ **caption_generator** 시작
+- [14:56:04] ✅ **caption_generator** 완료
+- [14:56:04] ▶ **renderer** 시작
+- [14:56:22] ✅ **renderer** 완료
+- [14:56:22] ▶ **thumbnail_generator** 시작
+- [14:56:22] ✅ **thumbnail_generator** 완료
+- [14:56:22] ℹ️ 파이프라인 완료

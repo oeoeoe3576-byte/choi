@@ -8,7 +8,7 @@ from typing import Any
 
 import yaml
 
-IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp", ".heic")
+IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif")
 
 
 def ensure_dir(path: Path) -> Path:

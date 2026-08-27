@@ -12,6 +12,9 @@ scheduled-jobs.json
 # 렌더링 중간 산출물(클립)은 기본적으로 정리되지만, 혹시 남아도 커밋 대상 아님
 **/output/_clips/
 
+# HEIC 변환/EXIF 정규화된 이미지 캐시 (image_normalizer.py가 생성, 원본이 아님)
+**/_normalized/
+
 # 샘플 프로젝트의 실행 로그는 예시로 커밋해둔다 (루트 .gitignore의 "logs" 규칙 무시)
 !sample_projects/**/logs/
 !sample_projects/**/logs/**

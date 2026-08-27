@@ -15,6 +15,7 @@ from src.models.project import Project
 from src.pipeline import (
     caption_generator,
     image_classifier,
+    image_normalizer,
     motion_planner,
     project_loader,
     script_generator,
@@ -91,6 +92,22 @@ def run_pipeline(
             logger.step_fail(name, str(exc))
             result["steps"][name] = f"failed: {exc}"
             raise PipelineError(name, exc) from exc
+
+    def _normalize():
+        normalized, warns = image_normalizer.normalize_images(project.images, project.project_dir)
+        for w in warns:
+            logger.step_warn("image_normalizer", w)
+            project.warnings.append(w)
+        return normalized
+
+    project.images = step("image_normalizer", _normalize)
+    if not project.images:
+        msg = (
+            "정규화 가능한 이미지가 한 장도 없습니다 (전부 열 수 없거나 HEIC 디코더가 "
+            "없습니다). 위 image_normalizer 경고를 확인하세요."
+        )
+        logger.step_fail("image_normalizer", msg)
+        raise PipelineError("image_normalizer", RuntimeError(msg))
 
     image_analysis = step(
         "image_classifier",
