@@ -10,53 +10,58 @@
 from __future__ import annotations
 
 import argparse
+import random
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter
 
+# (파일명, 기본 배경색, 밝은 보조색) - image_classifier.py가 파일명으로 scene_type을
+# 인식하도록 이름에 키워드를 넣는다. 실제 영상에 섞여 보이면 안 되므로 이미지 위에는
+# 아무 글자도 쓰지 않고, 은은한 그라데이션 블록만 사용한다 (모션/자막 테스트용).
 SCENES = [
-    ("01_exterior", "EXTERIOR", (58, 90, 120)),
-    ("02_lobby", "LOBBY", (120, 100, 80)),
-    ("03_room_wide", "ROOM", (150, 130, 110)),
-    ("04_bed", "BED", (170, 150, 140)),
-    ("05_bathroom", "BATHROOM", (200, 210, 215)),
-    ("06_view", "RIVER VIEW", (70, 130, 160)),
-    ("07_terrace", "TERRACE", (110, 140, 100)),
-    ("08_pool", "POOL", (40, 130, 150)),
-    ("09_breakfast", "BREAKFAST", (200, 160, 90)),
-    ("10_detail", "DETAIL", (130, 110, 140)),
-    ("11_night_view", "NIGHT VIEW", (30, 30, 60)),
-    ("12_view", "SUNSET VIEW", (200, 120, 80)),
-]
-
-FONT_CANDIDATES = [
-    "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",
-    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    ("01_exterior", (58, 90, 120)),
+    ("02_lobby", (120, 100, 80)),
+    ("03_room_wide", (150, 130, 110)),
+    ("04_bed", (170, 150, 140)),
+    ("05_bathroom", (200, 210, 215)),
+    ("06_view", (70, 130, 160)),
+    ("07_terrace", (110, 140, 100)),
+    ("08_pool", (40, 130, 150)),
+    ("09_breakfast", (200, 160, 90)),
+    ("10_detail", (130, 110, 140)),
+    ("11_night_view", (30, 30, 60)),
+    ("12_view", (200, 120, 80)),
 ]
 
 
-def _font(size: int):
-    for path in FONT_CANDIDATES:
-        if Path(path).exists():
-            return ImageFont.truetype(path, size)
-    return ImageFont.load_default()
+def _gradient_block(width: int, height: int, base: tuple[int, int, int], seed: int) -> Image.Image:
+    """텍스트 없이, 컷마다 살짝 다른 대각선 그라데이션 블록을 만든다.
+
+    완전 단색이면 화면이 다 똑같아 보여 모션 확인이 어려우므로 최소한의
+    시각적 변화만 준다 (실제 사진을 넣으면 이 mock 생성기는 필요 없다).
+    """
+    rng = random.Random(seed)
+    lighten = rng.randint(20, 45)
+    light = tuple(min(255, c + lighten) for c in base)
+    img = Image.new("RGB", (width, height), base)
+    overlay = Image.new("L", (width, height), 0)
+    draw = ImageDraw.Draw(overlay)
+    draw.polygon([(0, height), (width * 0.6, 0), (width, 0), (width, height)], fill=180)
+    overlay = overlay.filter(ImageFilter.GaussianBlur(width * 0.15))
+    solid = Image.new("RGB", (width, height), light)
+    img = Image.composite(solid, img, overlay)
+    return img
 
 
 def generate(project_dir: Path, count: int, width: int, height: int) -> list[Path]:
     images_dir = project_dir / "images"
     images_dir.mkdir(parents=True, exist_ok=True)
-    font = _font(64)
     created = []
     for i in range(count):
-        name, label, color = SCENES[i % len(SCENES)]
+        name, color = SCENES[i % len(SCENES)]
         suffix = "" if i < len(SCENES) else f"_{i}"
-        img = Image.new("RGB", (width, height), color)
-        draw = ImageDraw.Draw(img)
-        bbox = draw.textbbox((0, 0), label, font=font)
-        tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
-        draw.text(((width - tw) / 2, (height - th) / 2), label, font=font, fill="white",
-                   stroke_width=3, stroke_fill="black")
+        img = _gradient_block(width, height, color, seed=i)
         out_path = images_dir / f"{name}{suffix}.jpg"
         img.save(out_path, quality=90)
         created.append(out_path)

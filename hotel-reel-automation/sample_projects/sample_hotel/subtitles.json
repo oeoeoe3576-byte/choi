@@ -12,7 +12,7 @@
       "감성",
       "저장"
     ],
-    "layout": "lower_third"
+    "layout": "center"
   },
   {
     "index": 2,
@@ -25,7 +25,7 @@
     "emphasis_words": [
       "뷰"
     ],
-    "layout": "lower_third"
+    "layout": "center"
   },
   {
     "index": 3,
@@ -39,7 +39,7 @@
       "감성",
       "인테리어"
     ],
-    "layout": "lower_third"
+    "layout": "center"
   },
   {
     "index": 4,
@@ -53,7 +53,7 @@
     "emphasis_words": [
       "위치"
     ],
-    "layout": "lower_third"
+    "layout": "center"
   },
   {
     "index": 5,
@@ -66,7 +66,7 @@
     "emphasis_words": [
       "조식"
     ],
-    "layout": "lower_third"
+    "layout": "center"
   },
   {
     "index": 6,
@@ -77,7 +77,7 @@
     ],
     "text": "사진 찍기 좋은 분위기이에요.",
     "emphasis_words": [],
-    "layout": "lower_third"
+    "layout": "center"
   },
   {
     "index": 7,
@@ -91,6 +91,6 @@
     "emphasis_words": [
       "저장"
     ],
-    "layout": "lower_third"
+    "layout": "center"
   }
 ]

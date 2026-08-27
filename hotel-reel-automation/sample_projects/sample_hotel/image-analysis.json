@@ -10,7 +10,7 @@
   {
     "image": "images/02_lobby.jpg",
     "scene_type": "lobby",
-    "quality_score": 60,
+    "quality_score": 40,
     "narrative_priority": 1,
     "classification_method": "filename_keyword",
     "order_in_folder": 1
@@ -18,7 +18,7 @@
   {
     "image": "images/03_room_wide.jpg",
     "scene_type": "room_wide",
-    "quality_score": 60,
+    "quality_score": 40,
     "narrative_priority": 2,
     "classification_method": "filename_keyword",
     "order_in_folder": 2

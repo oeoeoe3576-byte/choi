@@ -24,7 +24,7 @@ styles:
       duration: 0.35
       avoid_repeat: true
     subtitle:
-      position: "lower_third"
+      position: "center"
       max_lines: 2
       max_chars_per_line: 16
       tone: "clean"
@@ -100,7 +100,7 @@ styles:
       duration: 0.3
       avoid_repeat: true
     subtitle:
-      position: "lower_third"
+      position: "center"
       max_lines: 2
       max_chars_per_line: 16
       tone: "friendly"
@@ -127,7 +127,7 @@ styles:
       duration: 0.2
       avoid_repeat: true
     subtitle:
-      position: "lower_third"
+      position: "center"
       max_lines: 2
       max_chars_per_line: 16
       tone: "bold"

@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from PIL import ImageFont
+
 from src.models.project import Project
 from src.models.shot import Shot
 from src.models.subtitle import SubtitleCue
@@ -37,6 +39,7 @@ def _escape_filter_path(path: str) -> str:
 def _build_shot_filter(
     shot: Shot, cue: SubtitleCue | None, cfg: dict, sub_layout: dict,
     emphasis_color: str, fade_seconds: float, ass_path: Path | None,
+    fontsize: int, font_path: str | None,
 ) -> str:
     W, H = cfg["output"]["width"], cfg["output"]["height"]
     fps = cfg["output"]["fps"]
@@ -67,7 +70,7 @@ def _build_shot_filter(
         filters.append(f"fade=t=out:st={out_start:.3f}:d={fd:.3f}")
 
     if cfg["subtitle_burn_in"]["enabled"] and cue is not None and cue.lines and ass_path is not None:
-        write_ass_file(cue, sub_layout, W, H, emphasis_color, ass_path)
+        write_ass_file(cue, sub_layout, W, H, emphasis_color, ass_path, fontsize, font_path)
         filters.append(f"ass={_escape_filter_path(str(ass_path))}")
 
     return ",".join(filters)
@@ -116,53 +119,111 @@ def _build_ass_line_text(lines: list[str], emphasis_words: list[str], emphasis_c
     return "\\N".join(rendered_lines)
 
 
-def write_ass_file(cue: SubtitleCue, layout: dict, video_width: int, video_height: int,
-                    emphasis_color: str, out_path: Path) -> None:
-    """libass(ass 필터)로 렌더링할 .ass 자막 파일을 컷(클립) 하나 분량으로 만든다.
+def compute_global_fontsize(layout: dict, video_width: int, video_height: int) -> int:
+    """영상 전체에서 공통으로 쓸 자막 폰트 크기를 '한 번만' 계산한다.
 
-    클립은 각자 0초부터 시작하는 독립 mp4라서, 이 컷의 duration 전체를 덮는
-    Dialogue 한 줄만 있으면 된다.
+    컷마다 그 컷의 실제 텍스트 길이에 맞춰 폰트 크기를 다시 계산하면, 짧은
+    문장은 크게/긴 문장은 작게 나와서 컷마다 자막 크기와 박스 크기가
+    들쭉날쭉해 보인다. 그래서 스타일에 설정된 max_chars_per_line(글자 수
+    예산)을 기준으로 크기를 한 번만 정하고, 영상 전체 컷이 이 크기를
+    공유한다 (개별 컷 텍스트가 이 예산을 넘는 예외 상황에서만
+    `_fit_fontsize_for_cue`가 해당 컷 한정으로 축소한다).
     """
-    # 한글은 대체로 정사각형에 가까운 전각 글자라, 폰트 크기를 '영상 높이의 %'로만
-    # 정하면 글자 수가 많은 줄에서 영상 폭을 넘어가 잘릴 수 있다. (1) 높이 기준
-    # 최대 크기와 (2) 실제 줄 길이가 폭 안에 들어오는 크기 중 더 작은 값을 쓴다.
     margin_side_pct = layout.get("margin_side_pct", 8)
     usable_width = video_width * (1 - 2 * margin_side_pct / 100)
-    longest_line_chars = max((len(line) for line in cue.lines), default=layout["max_chars_per_line"])
-    longest_line_chars = max(longest_line_chars, 6)
-    fit_by_width = usable_width / longest_line_chars
+    max_chars = max(layout.get("max_chars_per_line", 16), 6)
+    fit_by_width = usable_width / max_chars
     fit_by_height_pct = video_height * layout["font_size_pct"] / 100
-    fontsize = max(int(min(fit_by_width, fit_by_height_pct)), 24)
+    return max(int(min(fit_by_width, fit_by_height_pct)), 24)
+
+
+def _measure_text_block(lines: list[str], font_path: str | None, fontsize: int) -> tuple[float, float, float]:
+    """(가장 긴 줄의 픽셀 폭, 줄 하나의 높이, 전체 텍스트 블록 높이)를 실측한다."""
+    if font_path:
+        font = ImageFont.truetype(font_path, fontsize)
+    else:
+        font = ImageFont.load_default()
+    widths = [font.getlength(line) for line in lines] or [0.0]
+    ascent, descent = font.getmetrics()
+    line_height = (ascent + descent) * 1.25  # 자간/줄간 여유
+    return max(widths), line_height, line_height * len(lines)
+
+
+def _fit_fontsize_for_cue(lines: list[str], font_path: str | None, base_fontsize: int,
+                           usable_width: float) -> int:
+    """이 컷의 텍스트가 (오버플로 병합 등으로) 예산보다 길면, 이 컷만 축소한다.
+
+    대부분의 컷은 base_fontsize를 그대로 반환해 영상 전체 자막 크기가
+    일정하게 유지된다.
+    """
+    if not lines or not font_path:
+        return base_fontsize
+    max_width, _, _ = _measure_text_block(lines, font_path, base_fontsize)
+    if max_width <= usable_width or max_width <= 0:
+        return base_fontsize
+    scale = usable_width / max_width
+    return max(int(base_fontsize * scale * 0.96), 20)
+
+
+def write_ass_file(cue: SubtitleCue, layout: dict, video_width: int, video_height: int,
+                    emphasis_color: str, out_path: Path, base_fontsize: int,
+                    font_path: str | None) -> None:
+    """libass(ass 필터)로 렌더링할 .ass 자막 파일을 컷(클립) 하나 분량으로 만든다.
+
+    자막 배경 박스는 ASS의 기본 "줄마다 박스"(BorderStyle=3) 대신, 실제 텍스트
+    크기를 PIL로 측정해 여러 줄을 감싸는 사각형 하나를 직접 그린다 (Layer 0).
+    그 위에 텍스트를 outline만 있는 스타일로 얹는다 (Layer 1). 이렇게 해야
+    두 줄 자막에서 줄마다 폭이 다른 박스 두 개가 계단처럼 겹쳐 보이는 문제가
+    없다.
+    """
+    margin_side_pct = layout.get("margin_side_pct", 8)
+    usable_width = video_width * (1 - 2 * margin_side_pct / 100)
+    fontsize = _fit_fontsize_for_cue(cue.lines, font_path, base_fontsize, usable_width)
 
     font_family = layout.get("font_family", "NanumGothic").split(",")[0].strip()
+    max_line_w, line_height, block_h = _measure_text_block(cue.lines, font_path, fontsize)
+
+    pad_h, pad_v = fontsize * 0.5, fontsize * 0.32
+    box_w = max_line_w + 2 * pad_h
+    box_h = block_h + 2 * pad_v
+    box_left = (video_width - box_w) / 2
 
     position = layout["position"]
     if position == "lower_third":
-        alignment = 2
-        margin_v = int(video_height * layout["margin_bottom_pct"] / 100)
+        margin_v_px = video_height * layout["margin_bottom_pct"] / 100
+        box_top = video_height - margin_v_px - box_h
     elif position == "upper_third":
-        alignment = 8
-        margin_v = int(video_height * layout.get("margin_top_pct", 10) / 100)
+        margin_v_px = video_height * layout.get("margin_top_pct", 10) / 100
+        box_top = margin_v_px
     else:
-        alignment = 5
-        margin_v = 0
-    margin_lr = int(video_width * margin_side_pct / 100)
+        box_top = (video_height - box_h) / 2
+
+    text_center_x = video_width / 2
+    text_center_y = box_top + box_h / 2
 
     base_color = _hex_to_ass_color(layout["font_color"], 1.0)
     outline_color = _hex_to_ass_color(layout["stroke_color"], 1.0)
     emphasis_ass_color = _hex_to_ass_color(emphasis_color, 1.0)
-
     box_enabled = layout.get("box_enabled", False)
-    if box_enabled:
-        border_style = 3
-        outline = 10  # 박스 모드에서는 텍스트와 박스 테두리 사이 여백 역할
-        back_color = _hex_to_ass_color(layout["box_color"], 1 - layout.get("box_opacity", 0.35))
-    else:
-        border_style = 1
-        outline = max(layout.get("stroke_width_px", 3), 1)
-        back_color = "&H00000000"
 
     text = _build_ass_line_text(cue.lines, cue.emphasis_words, emphasis_ass_color, base_color)
+    end_ts = _ass_timestamp(cue.end - cue.start)
+
+    events = []
+    if box_enabled:
+        # "&H{AA}{BB}{GG}{RR}" 형식에서 알파 2자리(index 2:4)와 색상 6자리(index 4:10)를
+        # 분리해 \1c(색)와 \1a(알파) override 태그에 각각 넣는다.
+        box_fill = _hex_to_ass_color(layout["box_color"], layout.get("box_opacity", 0.35))
+        box_alpha_hex, box_rgb_hex = box_fill[2:4], box_fill[4:10]
+        events.append(
+            f"Dialogue: 0,0:00:00.00,{end_ts},Box,,0,0,0,,"
+            f"{{\\an7\\pos({box_left:.1f},{box_top:.1f})\\1c&H{box_rgb_hex}&\\1a&H{box_alpha_hex}&\\p1}}"
+            f"m 0 0 l {box_w:.0f} 0 l {box_w:.0f} {box_h:.0f} l 0 {box_h:.0f}{{\\p0}}"
+        )
+    events.append(
+        f"Dialogue: 1,0:00:00.00,{end_ts},Text,,0,0,0,,"
+        f"{{\\an5\\pos({text_center_x:.1f},{text_center_y:.1f})}}{text}"
+    )
 
     ass_content = f"""[Script Info]
 ScriptType: v4.00+
@@ -172,11 +233,12 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,{font_family},{fontsize},{base_color},&H000000FF,{outline_color},{back_color},-1,0,0,0,100,100,0,0,{border_style},{outline},0,{alignment},{margin_lr},{margin_lr},{margin_v},1
+Style: Text,{font_family},{fontsize},{base_color},&H000000FF,{outline_color},&H00000000,-1,0,0,0,100,100,0,0,1,{max(layout.get('stroke_width_px', 3), 1)},0,5,0,0,0,1
+Style: Box,{font_family},{fontsize},&H00FFFFFF,&H000000FF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 0,0:00:00.00,{_ass_timestamp(cue.end - cue.start)},Default,,0,0,0,,{text}
+{chr(10).join(events)}
 """
     write_text(out_path, ass_content)
 
@@ -197,7 +259,8 @@ def render_project(
     binary = resolve_ffmpeg_binary(cfg.get("ffmpeg_binary", "ffmpeg"))
     # 한글 폰트가 시스템에 하나도 없으면 자막이 빈 사각형(tofu)으로 나올 수 있으니,
     # 그 경우엔 아예 자막 번인을 건너뛴다 (영상 자체는 계속 만들어지게).
-    has_korean_font = find_first_existing_font(cfg["subtitle_burn_in"]["font_path_candidates"]) is not None
+    font_path = find_first_existing_font(cfg["subtitle_burn_in"]["font_path_candidates"])
+    has_korean_font = font_path is not None
 
     sub_style = style.get("subtitle", {})
     from src.pipeline.subtitle_generator import load_subtitle_config
@@ -217,6 +280,11 @@ def render_project(
     fade_seconds = style.get("transitions", {}).get("duration", 0.3)
     subtitle_enabled = cfg["subtitle_burn_in"]["enabled"] and has_korean_font
 
+    # 영상 전체가 공유할 폰트 크기를 여기서 딱 한 번만 계산한다 (컷마다 다시
+    # 계산하면 자막 크기가 컷마다 들쭉날쭉해진다 - _build_shot_filter 안의
+    # write_ass_file()이 컷별로 예외적으로만 이 값보다 축소한다).
+    global_fontsize = compute_global_fontsize(layout, cfg["output"]["width"], cfg["output"]["height"])
+
     clips_dir = ensure_dir(project.output_dir / "_clips")
     cue_by_index = {c.index: c for c in cues}
 
@@ -231,7 +299,7 @@ def render_project(
         cfg_for_shot["subtitle_burn_in"] = {**cfg["subtitle_burn_in"], "enabled": subtitle_enabled}
         filter_str = _build_shot_filter(
             shot, cue_by_index.get(shot.shot_index), cfg_for_shot, layout, emphasis_color,
-            fade_seconds, ass_path,
+            fade_seconds, ass_path, global_fontsize, font_path,
         )
         clip_path = clips_dir / f"shot_{shot.shot_index:02d}.mp4"
         run_ffmpeg(
