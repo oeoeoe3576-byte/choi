@@ -3,56 +3,44 @@
     "index": 1,
     "shot_index": 1,
     "start": 0.0,
-    "end": 0.441,
+    "end": 1.165,
     "lines": [
-      "Porto,"
+      "포르투에서 감성 숙소"
     ],
-    "text": "Porto,",
-    "emphasis_words": [],
-    "layout": "center"
-  },
-  {
-    "index": 2,
-    "shot_index": 1,
-    "start": 0.441,
-    "end": 1.176,
-    "lines": [
-      "Portugal에서"
-    ],
-    "text": "Portugal에서",
-    "emphasis_words": [],
-    "layout": "center"
-  },
-  {
-    "index": 3,
-    "shot_index": 1,
-    "start": 1.176,
-    "end": 1.912,
-    "lines": [
-      "감성 숙소 찾는다면"
-    ],
-    "text": "감성 숙소 찾는다면",
+    "text": "포르투에서 감성 숙소",
     "emphasis_words": [
       "감성"
     ],
     "layout": "center"
   },
   {
-    "index": 4,
+    "index": 2,
     "shot_index": 1,
-    "start": 1.912,
+    "start": 1.165,
+    "end": 1.906,
+    "lines": [
+      "찾는다면 여기"
+    ],
+    "text": "찾는다면 여기",
+    "emphasis_words": [],
+    "layout": "center"
+  },
+  {
+    "index": 3,
+    "shot_index": 1,
+    "start": 1.906,
     "end": 2.647,
     "lines": [
-      "여기 저장해두세요."
+      "저장해두세요."
     ],
-    "text": "여기 저장해두세요.",
+    "text": "저장해두세요.",
     "emphasis_words": [
       "저장"
     ],
     "layout": "center"
   },
   {
-    "index": 5,
+    "index": 4,
     "shot_index": 2,
     "start": 2.647,
     "end": 5.588,
@@ -66,7 +54,7 @@
     "layout": "center"
   },
   {
-    "index": 6,
+    "index": 5,
     "shot_index": 3,
     "start": 5.588,
     "end": 7.157,
@@ -80,7 +68,7 @@
     "layout": "center"
   },
   {
-    "index": 7,
+    "index": 6,
     "shot_index": 3,
     "start": 7.157,
     "end": 8.529,
@@ -94,59 +82,47 @@
     "layout": "center"
   },
   {
-    "index": 8,
+    "index": 7,
     "shot_index": 4,
     "start": 8.529,
-    "end": 10.087,
+    "end": 10.779,
     "lines": [
-      "위치가 좋아 관광"
+      "위치가 좋아 관광 동선이"
     ],
-    "text": "위치가 좋아 관광",
+    "text": "위치가 좋아 관광 동선이",
     "emphasis_words": [
       "위치"
     ],
     "layout": "center"
   },
   {
-    "index": 9,
+    "index": 8,
     "shot_index": 4,
-    "start": 10.087,
+    "start": 10.779,
     "end": 11.471,
     "lines": [
-      "동선이 편해요."
+      "편해요."
     ],
-    "text": "동선이 편해요.",
+    "text": "편해요.",
     "emphasis_words": [],
     "layout": "center"
   },
   {
-    "index": 10,
+    "index": 9,
     "shot_index": 5,
     "start": 11.471,
-    "end": 13.342,
+    "end": 14.412,
     "lines": [
-      "조식 만족도가"
+      "조식 만족도가 높아요."
     ],
-    "text": "조식 만족도가",
+    "text": "조식 만족도가 높아요.",
     "emphasis_words": [
       "조식"
     ],
     "layout": "center"
   },
   {
-    "index": 11,
-    "shot_index": 5,
-    "start": 13.342,
-    "end": 14.412,
-    "lines": [
-      "높아요."
-    ],
-    "text": "높아요.",
-    "emphasis_words": [],
-    "layout": "center"
-  },
-  {
-    "index": 12,
+    "index": 10,
     "shot_index": 6,
     "start": 14.412,
     "end": 15.98,
@@ -158,7 +134,7 @@
     "layout": "center"
   },
   {
-    "index": 13,
+    "index": 11,
     "shot_index": 6,
     "start": 15.98,
     "end": 17.353,
@@ -170,58 +146,34 @@
     "layout": "center"
   },
   {
-    "index": 14,
+    "index": 12,
     "shot_index": 7,
     "start": 17.353,
-    "end": 17.691,
+    "end": 17.997,
     "lines": [
-      "Porto,"
+      "포르투 숙소 고민"
     ],
-    "text": "Porto,",
+    "text": "포르투 숙소 고민",
     "emphasis_words": [],
     "layout": "center"
   },
   {
-    "index": 15,
+    "index": 13,
     "shot_index": 7,
-    "start": 17.691,
-    "end": 18.141,
+    "start": 17.997,
+    "end": 18.855,
     "lines": [
-      "Portugal"
+      "중이라면 참고해보세요."
     ],
-    "text": "Portugal",
+    "text": "중이라면 참고해보세요.",
     "emphasis_words": [],
     "layout": "center"
   },
   {
-    "index": 16,
+    "index": 14,
     "shot_index": 7,
-    "start": 18.141,
-    "end": 18.705,
-    "lines": [
-      "숙소 고민 중이라면"
-    ],
-    "text": "숙소 고민 중이라면",
-    "emphasis_words": [],
-    "layout": "center"
-  },
-  {
-    "index": 17,
-    "shot_index": 7,
-    "start": 18.705,
-    "end": 19.099,
-    "lines": [
-      "참고해보세요."
-    ],
-    "text": "참고해보세요.",
-    "emphasis_words": [],
-    "layout": "center"
-  },
-  {
-    "index": 18,
-    "shot_index": 7,
-    "start": 19.099,
-    "end": 19.662,
+    "start": 18.855,
+    "end": 19.571,
     "lines": [
       "저장해두고 여행 때"
     ],
@@ -232,9 +184,9 @@
     "layout": "center"
   },
   {
-    "index": 19,
+    "index": 15,
     "shot_index": 7,
-    "start": 19.662,
+    "start": 19.571,
     "end": 20.0,
     "lines": [
       "꺼내보세요."

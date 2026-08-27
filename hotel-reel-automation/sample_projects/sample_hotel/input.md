@@ -1,6 +1,6 @@
 project_name: porto-riverside-reel
 hotel_name: Porto Riverside Hotel
-location: Porto, Portugal
+location: 포르투
 video_length: 20
 tone: emotional
 style_preset: clean_travel

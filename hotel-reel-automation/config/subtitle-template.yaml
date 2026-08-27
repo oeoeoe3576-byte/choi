@@ -7,10 +7,10 @@
 # 자막 규칙 (요청 반영):
 #   - 배경 박스 없음 (box_enabled: false) — 대신 외곽선(stroke)+그림자를 굵게
 #     줘서 어떤 사진 위에서도 읽히게 한다.
-#   - 한 번에 짧게, 무조건 한 줄로: max_chars_per_line ~10자 (5음절 안팎).
-#     대본 문장이 더 길면 subtitle_generator.py가 여러 개의 짧은 한 줄
-#     자막으로 쪼개서 그 컷의 재생 시간 동안 순서대로 짧게 보여준다
-#     (절대 두 줄로 줄바꿈하지 않는다).
+#   - 한 번에 짧게, 무조건 한 줄로: max_chars_per_line ~13자 안팎(자연스러운
+#     구절 단위로 끊기게). 대본 문장이 더 길면 subtitle_generator.py가 여러
+#     개의 짧은 한 줄 자막으로 쪼개서 그 컷의 재생 시간 동안 순서대로 짧게
+#     보여준다 (절대 두 줄로 줄바꿈하지 않는다).
 #   - 손글씨 느낌 폰트 (font_family 참고).
 # ------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ layouts:
     margin_bottom_pct: 12         # 화면 하단에서부터 여백 (%)
     margin_side_pct: 8
     max_lines: 1                  # 항상 한 줄 (subtitle_generator가 보장)
-    max_chars_per_line: 10        # 5음절~10자 안팎. 넘으면 여러 자막으로 쪼개짐
+    max_chars_per_line: 13        # 자연스러운 구절 단위. 넘으면 여러 자막으로 쪼개짐
     font_family: "Nanum Pen Script, NanumGothic, sans-serif"
     font_size_pct: 7.5            # 짧은 한 줄 자막이라 크게 써도 잘림 걱정이 적다
     font_color: "#FFFFFF"
@@ -53,7 +53,7 @@ layouts:
     margin_bottom_pct: 0
     margin_side_pct: 10
     max_lines: 1
-    max_chars_per_line: 10
+    max_chars_per_line: 13
     font_family: "Nanum Pen Script, NanumGothic, sans-serif"
     font_size_pct: 8.0
     font_color: "#FFFFFF"
@@ -74,7 +74,7 @@ layouts:
     margin_top_pct: 10
     margin_side_pct: 8
     max_lines: 1
-    max_chars_per_line: 10
+    max_chars_per_line: 13
     font_family: "Nanum Pen Script, NanumGothic, sans-serif"
     font_size_pct: 7.5
     font_color: "#FFFFFF"

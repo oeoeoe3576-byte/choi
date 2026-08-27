@@ -4,7 +4,7 @@
 - 길이: 20초 / 톤: emotional / provider: template
 
 ## Hook
-Porto, Portugal에서 감성 숙소 찾는다면 여기 저장해두세요.
+포르투에서 감성 숙소 찾는다면 여기 저장해두세요.
 
 ## Scenes
 1. 강변 뷰가 예뻐요.
@@ -14,7 +14,7 @@ Porto, Portugal에서 감성 숙소 찾는다면 여기 저장해두세요.
 5. 사진 찍기 좋은 분위기이에요.
 
 ## Closing
-Porto, Portugal 숙소 고민 중이라면 참고해보세요.
+포르투 숙소 고민 중이라면 참고해보세요.
 
 ## CTA
 저장해두고 여행 때 꺼내보세요.

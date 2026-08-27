@@ -4,7 +4,7 @@
     "image": "images/01_exterior.jpg",
     "scene_type": "exterior",
     "duration": 2.647,
-    "caption": "Porto, Portugal에서 감성 숙소 찾는다면 여기 저장해두세요.",
+    "caption": "포르투에서 감성 숙소 찾는다면 여기 저장해두세요.",
     "motion": {
       "preset": "zoom_in",
       "start_scale": 1.0,
@@ -100,7 +100,7 @@
     "image": "images/05_bathroom.jpg",
     "scene_type": "bathroom",
     "duration": 2.647,
-    "caption": "Porto, Portugal 숙소 고민 중이라면 참고해보세요.\n저장해두고 여행 때 꺼내보세요.",
+    "caption": "포르투 숙소 고민 중이라면 참고해보세요.\n저장해두고 여행 때 꺼내보세요.",
     "motion": {
       "preset": "pan_left",
       "start_scale": 1.0,
